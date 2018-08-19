@@ -16,11 +16,23 @@ class Products extends StatelessWidget {
     ]));
   }
 
+  // Show the products list or text stating that there are no products
+  Widget _buildProductList() {
+    Widget productCards =
+        Center(child: Text('Empty products list, please add some!'));
+
+    if (products.length > 0) {
+      productCards = ListView.builder(
+        itemBuilder: _buildProductItem, // Indicates, what builing an item means
+        itemCount: products.length, // How many items will be built
+      );
+    }
+
+    return productCards;
+  }
+
   @override
   Widget build(BuildContext context) {
-    return products.length > 0 ? ListView.builder(
-      itemBuilder: _buildProductItem, // Indicates, what builing an item means
-      itemCount: products.length, // How many items will be built
-    ) : Center(child: Text('Empty products list, please add some!'));
+    return _buildProductList();
   }
 }
