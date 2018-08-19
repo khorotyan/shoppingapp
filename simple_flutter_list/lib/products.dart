@@ -8,15 +8,16 @@ class Products extends StatelessWidget {
   // this.products automatically does: this.products = products
   Products(this.products);
 
+  Widget _buildProductItem(BuildContext context, int index) {
+    return Card(child: Column(children: <Widget> [Image.asset('images/img512_512.png'),
+    Text(products[index])]));
+  }
+
   @override
   Widget build(BuildContext context) {
-    return ListView(
-        children: products
-            .map((element) => Card(
-                    child: Column(children: <Widget>[
-                  Image.asset('images/img512_512.png'),
-                  Text(element)
-                ])))
-            .toList());
+    return ListView.builder(
+      itemBuilder: _buildProductItem, // Indicates, what builing an item means
+      itemCount: products.length, // How many items will be built
+    );
   }
 }
