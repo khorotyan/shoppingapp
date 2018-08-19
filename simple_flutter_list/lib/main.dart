@@ -25,7 +25,7 @@ class SimpleApp extends StatelessWidget {
           appBar: AppBar(
             title: Text('SimpleList'),
           ),
-          body: ProductManager('Default product')),
+          body: ProductManager()),
     );
   }
 }
