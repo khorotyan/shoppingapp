@@ -18,7 +18,7 @@ class Products extends StatelessWidget {
 
   // Show the products list or text stating that there are no products
   Widget _buildProductList() {
-    Widget productCards =
+    Widget productCards = // = Container() // if we do not want to render anything
         Center(child: Text('Empty products list, please add some!'));
 
     if (products.length > 0) {

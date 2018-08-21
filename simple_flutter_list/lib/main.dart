@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import './product_manager.dart';
+import './pages/home.dart';
 
 void main() {
   runApp(SimpleApp());
@@ -21,11 +21,7 @@ class SimpleApp extends StatelessWidget {
           brightness: Brightness.light,
           primarySwatch: Colors.deepOrange,
           accentColor: Colors.deepOrangeAccent),
-      home: Scaffold(
-          appBar: AppBar(
-            title: Text('SimpleList'),
-          ),
-          body: ProductManager()),
+      home: HomePage()
     );
   }
 }
