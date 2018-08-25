@@ -27,7 +27,7 @@ class ProductsAdminPage extends StatelessWidget {
             appBar: AppBar(
               title: Text('Manage Products'),
               // Each widget is one tab
-              bottom: TabBar(tabs: <Widget>[
+              bottom: TabBar(indicatorColor: Colors.white, tabs: <Widget>[
                 Tab(icon: Icon(Icons.create), text: 'Create Product'),
                 Tab(icon: Icon(Icons.list), text: 'My Products')
               ]),
