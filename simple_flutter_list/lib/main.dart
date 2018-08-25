@@ -20,7 +20,7 @@ class SimpleApp extends StatelessWidget {
       theme: ThemeData(
           brightness: Brightness.light,
           primarySwatch: Colors.deepOrange,
-          accentColor: Colors.deepOrangeAccent),
+          accentColor: Colors.deepOrangeAccent[150]),
       home: AuthPage()
     );
   }
