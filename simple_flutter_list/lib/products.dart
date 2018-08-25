@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import './pages/products.dart';
+import './pages/product.dart';
 
 // The class contains a product
 class Products extends StatelessWidget {
