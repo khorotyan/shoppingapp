@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 
-import './pages/product.dart';
+import './pages/product_page.dart';
+import './entities/product.dart';
 
 // The class contains a product
 class Products extends StatelessWidget {
   // final - value is unchangable
-  final List<String> products;
+  final List<Product> products;
 
   // this.products automatically does: this.products = products
   Products(this.products);
@@ -13,8 +14,9 @@ class Products extends StatelessWidget {
   Widget _buildProductItem(BuildContext context, int index) {
     return Card(
         child: Column(children: <Widget>[
-      Image.asset('images/img512_512.png'),
-      Text(products[index]),
+      Image.asset(products[index].imageUrl),
+      Container(
+          padding: EdgeInsets.all(10.0), child: Text(products[index].title)),
       ButtonBar(
         alignment: MainAxisAlignment.center,
         children: <Widget>[
@@ -23,7 +25,8 @@ class Products extends StatelessWidget {
             onPressed: () => Navigator.push(
                 context,
                 MaterialPageRoute(
-                    builder: (BuildContext context) => ProductPage())),
+                    builder: (BuildContext context) =>
+                        ProductPage(products[index]))),
           )
         ],
       )

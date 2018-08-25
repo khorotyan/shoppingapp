@@ -1,18 +1,23 @@
 import 'package:flutter/material.dart';
 
+import '../entities/product.dart';
+
 class ProductPage extends StatelessWidget {
+  final Product product;
+
+  ProductPage(this.product);
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(title: Text('Details')),
+        appBar: AppBar(title: Text(product.title)),
         body: Column(
             crossAxisAlignment:
                 CrossAxisAlignment.center, // Horizontal alignment
             children: <Widget>[
-              Image.asset('images/img512_512.png'),
+              Image.asset(product.imageUrl),
               Container(
-                  padding: EdgeInsets.all(10.0),
-                  child: Text('This is the product details page')),
+                  padding: EdgeInsets.all(10.0), child: Text(product.details)),
               Container(
                   padding: EdgeInsets.all(10.0),
                   child: RaisedButton(
