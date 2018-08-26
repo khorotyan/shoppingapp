@@ -42,35 +42,44 @@ class _SimpleAppState extends State<SimpleApp> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      theme: ThemeData(
-          brightness: Brightness.light,
-          primarySwatch: Colors.deepOrange,
-          accentColor: Colors.deepOrangeAccent),
-      // home: AuthPage(),
-      routes: {
-        '/': (BuildContext context) => ProductsPage(_products, _addProduct, _removeProduct),
-        '/admin': (BuildContext context) => ProductsAdminPage()
-      },
-      
-      // Executed when we navigate to a named route
-      onGenerateRoute: (RouteSettings settings) {
-        // We want something like this: '/product/:id',
-        //  splitting will get us: '', 'product', and ':id' - index of the product
-        final List<String> pathElements = settings.name.split('/');
+        theme: ThemeData(
+            brightness: Brightness.light,
+            primarySwatch: Colors.deepOrange,
+            accentColor: Colors.deepOrangeAccent),
+        // home: AuthPage(),
+        routes: {
+          '/': (BuildContext context) =>
+              ProductsPage(_products, _addProduct, _removeProduct),
+          '/admin': (BuildContext context) => ProductsAdminPage()
+        },
 
-        if (pathElements[0] != '') {
-          return null; // Do not load the page
-        }
+        // Executed when we navigate to a named route
+        onGenerateRoute: (RouteSettings settings) {
+          // We want something like this: '/product/:id',
+          //  splitting will get us: '', 'product', and ':id' - index of the product
+          final List<String> pathElements = settings.name.split('/');
 
-        if (pathElements[1] == 'product') {
-          final int index = int.parse(pathElements[2]);
+          if (pathElements[0] != '') {
+            return null; // Do not load the page
+          }
 
-          return MaterialPageRoute<bool>(
-              builder: (BuildContext context) => ProductPage(_products[index]));
-        }
+          if (pathElements[1] == 'product') {
+            final int index = int.parse(pathElements[2]);
 
-        return null;
-      },
-    );
+            return MaterialPageRoute<bool>(
+                builder: (BuildContext context) =>
+                    ProductPage(_products[index]));
+          }
+
+          return null;
+        },
+        // Executed when 'onGenerateRoute' fails to generate a route
+        onUnknownRoute: (RouteSettings settings) {
+          return MaterialPageRoute(
+            // When we want to go to a page that does not exist, then at least go to
+            //  this page - the home page
+              builder: (BuildContext context) =>
+                  ProductsPage(_products, _addProduct, _removeProduct));
+        });
   }
 }
