@@ -15,10 +15,7 @@ class AuthPage extends StatelessWidget {
             // pushReplacement means that the current page gets completely
             //  replaced by the new page (cannot go back to this page from it)
             //  destroys data that existed in the previous page
-            Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(
-                    builder: (BuildContext context) => ProductsPage()));
+            Navigator.pushReplacementNamed(context, '/');
           },
         )));
   }

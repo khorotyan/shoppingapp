@@ -1,9 +1,15 @@
 import 'package:flutter/material.dart';
 
 import '../product_manager.dart';
-import './products_admin_page.dart';
+import '../entities/product.dart';
 
 class ProductsPage extends StatelessWidget {
+  final List<Product> products;
+  final Function addProduct;
+  final Function removeProduct;
+
+  ProductsPage(this.products, this.addProduct, this.removeProduct);
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -20,6 +26,6 @@ class ProductsPage extends StatelessWidget {
           )
         ])),
         appBar: AppBar(title: Text('Home page')),
-        body: ProductManager());
+        body: ProductManager(products, addProduct, removeProduct));
   }
 }
