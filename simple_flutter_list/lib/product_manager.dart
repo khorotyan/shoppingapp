@@ -15,11 +15,11 @@ class ProductManager extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Column(children: [
+      Expanded(child: Products(products, removeProduct)),
       Container(
-          margin: EdgeInsets.all(10.0), child: ProductControl(addProduct)),
-      Expanded(
-          child: Products(products,
-              removeProduct)) // Expanded takes the remainder of space
+          margin: EdgeInsets.all(10.0),
+          child: ProductControl(
+              addProduct)) // Expanded takes the remainder of space
     ]);
   }
 }
