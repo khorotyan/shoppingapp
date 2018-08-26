@@ -8,6 +8,30 @@ class ProductPage extends StatelessWidget {
 
   ProductPage(this.product);
 
+  _onDeleteButtonPress(BuildContext context) {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+              title: Text('Are you sure?'),
+              content: Text('This action cannot be undone!'),
+              actions: <Widget>[
+                FlatButton(
+                    child: Text('Cancel'),
+                    onPressed: () {
+                      Navigator.pop(context);
+                    }),
+                FlatButton(
+                    child: Text('Delete'),
+                    onPressed: () {
+                      Navigator.pop(context); // Close the dialog
+                      // Go back from the page and pass true as a parameter
+                      Navigator.pop(context, true);
+                    })
+              ]);
+        });
+  }
+
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
@@ -15,9 +39,9 @@ class ProductPage extends StatelessWidget {
         // onWillPop executed when clicking the back button
         onWillPop: () {
           // pass false as a parameter, meaning that we do not want to delete the product
-          Navigator.pop(context, false); 
+          Navigator.pop(context, false);
           // Allows the user to leave the page, pass true if leaving without the pop method
-          return Future.value(false); 
+          return Future.value(false);
           // Some other functionality can be executed here too
         },
         child: Scaffold(
@@ -36,7 +60,7 @@ class ProductPage extends StatelessWidget {
                           color: Theme.of(context).accentColor,
                           child: Text('Delete',
                               style: TextStyle(color: Colors.white)),
-                          onPressed: () => Navigator.pop(context, true))) // pass true as a parameter
+                          onPressed: () => _onDeleteButtonPress(context)))
                 ])));
   }
 }

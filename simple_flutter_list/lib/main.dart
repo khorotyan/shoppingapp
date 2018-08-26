@@ -76,8 +76,8 @@ class _SimpleAppState extends State<SimpleApp> {
         // Executed when 'onGenerateRoute' fails to generate a route
         onUnknownRoute: (RouteSettings settings) {
           return MaterialPageRoute(
-            // When we want to go to a page that does not exist, then at least go to
-            //  this page - the home page
+              // When we want to go to a page that does not exist, then at least go to
+              //  this page - the home page
               builder: (BuildContext context) =>
                   ProductsPage(_products, _addProduct, _removeProduct));
         });
