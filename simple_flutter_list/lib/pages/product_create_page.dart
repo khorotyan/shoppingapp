@@ -48,9 +48,8 @@ class _ProductCreatePageState extends State<ProductCreatePage> {
                   price = double.parse(value);
                 });
               }),
-          Container(
-              padding: EdgeInsets.only(top: 10.0),
-              child: RaisedButton(
+              SizedBox(height: 10.0),
+              RaisedButton(
                   color: Theme.of(context).accentColor,
                   child: Text('Create Product',
                       style: TextStyle(color: Colors.white)),
@@ -58,7 +57,7 @@ class _ProductCreatePageState extends State<ProductCreatePage> {
                     final Product product = new Product(title, description, 'images/img512_512.png', price);
 
                     widget.addProduct(product);
-                  }))
+                  })
         ]));
   }
 }
