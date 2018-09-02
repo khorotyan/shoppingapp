@@ -51,12 +51,13 @@ class _ProductCreatePageState extends State<ProductCreatePage> {
               SizedBox(height: 10.0),
               RaisedButton(
                   color: Theme.of(context).accentColor,
-                  child: Text('Create Product',
-                      style: TextStyle(color: Colors.white)),
+                  textColor: Colors.white,
+                  child: Text('Create Product'),
                   onPressed: () {
                     final Product product = new Product(title, description, 'images/img512_512.png', price);
-
                     widget.addProduct(product);
+
+                    Navigator.pushReplacementNamed(context, '/');
                   })
         ]));
   }
