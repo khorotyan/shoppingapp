@@ -5,10 +5,8 @@ import '../entities/product.dart';
 
 class ProductsPage extends StatelessWidget {
   final List<Product> products;
-  final Function addProduct;
-  final Function removeProduct;
 
-  ProductsPage(this.products, this.addProduct, this.removeProduct);
+  ProductsPage(this.products);
 
   @override
   Widget build(BuildContext context) {
@@ -26,6 +24,6 @@ class ProductsPage extends StatelessWidget {
           )
         ])),
         appBar: AppBar(title: Text('Home page')),
-        body: ProductManager(products, addProduct, removeProduct));
+        body: ProductManager(products));
   }
 }

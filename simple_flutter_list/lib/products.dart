@@ -7,10 +7,9 @@ import './entities/product.dart';
 class Products extends StatelessWidget {
   // final - value is unchangable
   final List<Product> products;
-  final Function deleteProduct;
 
   // this.products automatically does: this.products = products
-  Products(this.products, this.deleteProduct);
+  Products(this.products);
 
   Widget _buildProductItem(BuildContext context, int index) {
     return Card(
@@ -22,16 +21,9 @@ class Products extends StatelessWidget {
         alignment: MainAxisAlignment.center,
         children: <Widget>[
           FlatButton(
-            child: Text('Details'),
-            onPressed: () => Navigator
-                    .pushNamed<bool>(context, '/product/' + index.toString())
-                    .then((bool delete) {
-                  // Future will return a bool (when getting back to this page)
-                  if (delete) {
-                    deleteProduct(index);
-                  }
-                }),
-          )
+              child: Text('Details'),
+              onPressed: () => Navigator.pushNamed<bool>(
+                  context, '/product/' + index.toString()))
         ],
       )
     ]));

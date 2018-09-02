@@ -48,9 +48,9 @@ class _SimpleAppState extends State<SimpleApp> {
             accentColor: Colors.deepOrangeAccent),
         // home: AuthPage(),
         routes: {
-          '/': (BuildContext context) =>
-              ProductsPage(_products, _addProduct, _removeProduct),
-          '/admin': (BuildContext context) => ProductsAdminPage()
+          '/': (BuildContext context) => ProductsPage(_products),
+          '/admin': (BuildContext context) =>
+              ProductsAdminPage(_addProduct, _removeProduct)
         },
 
         // Executed when we navigate to a named route
@@ -79,7 +79,7 @@ class _SimpleAppState extends State<SimpleApp> {
               // When we want to go to a page that does not exist, then at least go to
               //  this page - the home page
               builder: (BuildContext context) =>
-                  ProductsPage(_products, _addProduct, _removeProduct));
+                  ProductsPage(_products));
         });
   }
 }

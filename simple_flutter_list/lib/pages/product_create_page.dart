@@ -1,6 +1,12 @@
 import 'package:flutter/material.dart';
 
+import '../entities/product.dart';
+
 class ProductCreatePage extends StatefulWidget {
+  final Function addProduct;
+
+  ProductCreatePage(this.addProduct);
+
   @override
   State<StatefulWidget> createState() {
     return _ProductCreatePageState();
@@ -48,7 +54,11 @@ class _ProductCreatePageState extends State<ProductCreatePage> {
                   color: Theme.of(context).accentColor,
                   child: Text('Create Product',
                       style: TextStyle(color: Colors.white)),
-                  onPressed: () {}))
+                  onPressed: () {
+                    final Product product = new Product(title, description, 'images/img512_512.png', price);
+
+                    widget.addProduct(product);
+                  }))
         ]));
   }
 }

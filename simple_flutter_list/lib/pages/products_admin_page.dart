@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
 
-import './products_page.dart';
 import './product_create_page.dart';
 import './product_list_page.dart';
 
 class ProductsAdminPage extends StatelessWidget {
+  final Function addProduct;
+  final Function removeProduct;
+
+  ProductsAdminPage(this.addProduct, this.removeProduct);
+
   @override
   Widget build(BuildContext context) {
     // Add tabs to the page
@@ -30,6 +34,6 @@ class ProductsAdminPage extends StatelessWidget {
               ]),
             ),
             body: TabBarView(
-                children: <Widget>[ProductCreatePage(), ProductListPage()])));
+                children: <Widget>[ProductCreatePage(addProduct), ProductListPage()])));
   }
 }
