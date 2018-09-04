@@ -50,7 +50,9 @@ class ProductPage extends StatelessWidget {
                 crossAxisAlignment:
                     CrossAxisAlignment.center, // Horizontal alignment
                 children: <Widget>[
-                  Image.asset(product.imageUrl),
+                  Container(
+                      padding: EdgeInsets.all(10.0),
+                      child: Image.asset(product.imageUrl)),
                   Container(
                       padding: EdgeInsets.all(10.0),
                       child: Text(product.details)),
