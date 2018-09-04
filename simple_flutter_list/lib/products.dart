@@ -35,6 +35,14 @@ class Products extends StatelessWidget {
                       style: TextStyle(color: Colors.white)))
             ],
           )),
+      Container(
+        padding: EdgeInsets.symmetric(horizontal: 6.0, vertical: 3.0),
+        decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(5.0),
+            border: Border.all(
+                color: Colors.grey, width: 1.0, style: BorderStyle.solid)),
+        child: Text('Manchester, United Kingdom'),
+      ),
       ButtonBar(
         alignment: MainAxisAlignment.center,
         children: <Widget>[
