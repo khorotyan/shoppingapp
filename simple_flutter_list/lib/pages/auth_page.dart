@@ -17,8 +17,16 @@ class _AuthPageState extends State<AuthPage> {
     return Scaffold(
         appBar: AppBar(title: Text('Login')),
         body: Container(
-            margin: EdgeInsets.all(10.0),
-            child: ListView(
+            decoration: BoxDecoration(
+                image: DecorationImage(
+                    fit: BoxFit.cover,
+                    colorFilter: ColorFilter.mode(
+                        Colors.yellow.withOpacity(0.8), BlendMode.dstATop),
+                    image: AssetImage('images/background.png'))),
+            padding: EdgeInsets.all(10.0),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
               children: <Widget>[
                 TextField(
                   decoration: InputDecoration(labelText: 'Email'),
@@ -29,6 +37,7 @@ class _AuthPageState extends State<AuthPage> {
                     });
                   },
                 ),
+                SizedBox(height: 12.0),
                 TextField(
                   decoration: InputDecoration(labelText: 'Password'),
                   obscureText: true,
@@ -38,10 +47,16 @@ class _AuthPageState extends State<AuthPage> {
                     });
                   },
                 ),
-                SwitchListTile(value: _acceptTerms, onChanged: (bool value){ setState(() {
-                                  _acceptTerms = value;
-                                });}, title: Text('Accept User Terms')),
-                SizedBox(height: 10.0),
+                SizedBox(height: 12.0),
+                SwitchListTile(
+                    value: _acceptTerms,
+                    onChanged: (bool value) {
+                      setState(() {
+                        _acceptTerms = value;
+                      });
+                    },
+                    title: Text('Accept User Terms')),
+                SizedBox(height: 12.0),
                 RaisedButton(
                   color: Theme.of(context).accentColor,
                   textColor: Colors.white,
