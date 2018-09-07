@@ -14,7 +14,7 @@ class ProductsPage extends StatelessWidget {
         // drawer is on the left, endDrawer on the right
         drawer: Drawer(
             child: Column(children: <Widget>[
-              // automaticallyImplyLeading disables the drawer icon
+          // automaticallyImplyLeading disables the drawer icon
           AppBar(automaticallyImplyLeading: false, title: Text('Choose')),
           ListTile(
             leading: Icon(Icons.edit),
@@ -24,7 +24,15 @@ class ProductsPage extends StatelessWidget {
             },
           )
         ])),
-        appBar: AppBar(title: Text('Home page')),
+        appBar: AppBar(
+          title: Text('Home page'),
+          actions: <Widget>[
+            IconButton(
+              icon: Icon(Icons.favorite),
+              onPressed: () {},
+            )
+          ],
+        ),
         body: ProductManager(products));
   }
 }
