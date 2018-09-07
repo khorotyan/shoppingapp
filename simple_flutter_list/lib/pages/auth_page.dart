@@ -29,7 +29,7 @@ class _AuthPageState extends State<AuthPage> {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: <Widget>[
                 TextField(
-                  decoration: InputDecoration(labelText: 'Email'),
+                  decoration: InputDecoration(labelText: 'Email', filled: true),
                   keyboardType: TextInputType.emailAddress,
                   onChanged: (String value) {
                     setState(() {
@@ -39,7 +39,7 @@ class _AuthPageState extends State<AuthPage> {
                 ),
                 SizedBox(height: 12.0),
                 TextField(
-                  decoration: InputDecoration(labelText: 'Password'),
+                  decoration: InputDecoration(labelText: 'Password', filled: true),
                   obscureText: true,
                   onChanged: (String value) {
                     setState(() {
