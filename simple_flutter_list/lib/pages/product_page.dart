@@ -8,30 +8,6 @@ class ProductPage extends StatelessWidget {
 
   ProductPage(this.product);
 
-  _onDeleteButtonPress(BuildContext context) {
-    showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return AlertDialog(
-              title: Text('Are you sure?'),
-              content: Text('This action cannot be undone!'),
-              actions: <Widget>[
-                FlatButton(
-                    child: Text('Cancel'),
-                    onPressed: () {
-                      Navigator.pop(context);
-                    }),
-                FlatButton(
-                    child: Text('Delete'),
-                    onPressed: () {
-                      Navigator.pop(context); // Close the dialog
-                      // Go back from the page and pass true as a parameter
-                      Navigator.pop(context, true);
-                    })
-              ]);
-        });
-  }
-
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
@@ -46,23 +22,38 @@ class ProductPage extends StatelessWidget {
         },
         child: Scaffold(
             appBar: AppBar(title: Text(product.title)),
-            body: Column(
-                crossAxisAlignment:
-                    CrossAxisAlignment.center, // Horizontal alignment
-                children: <Widget>[
-                  Container(
-                      padding: EdgeInsets.all(10.0),
-                      child: Image.asset(product.imageUrl)),
-                  Container(
-                      padding: EdgeInsets.all(10.0),
-                      child: Text(product.details)),
-                  Container(
-                      padding: EdgeInsets.all(10.0),
-                      child: RaisedButton(
-                          color: Theme.of(context).accentColor,
-                          child: Text('Delete',
-                              style: TextStyle(color: Colors.white)),
-                          onPressed: () => _onDeleteButtonPress(context)))
-                ])));
+            body: Container(
+                padding: EdgeInsets.all(6.0),
+                child: Column(
+                    crossAxisAlignment:
+                        CrossAxisAlignment.center, // Horizontal alignment
+                    children: <Widget>[
+                      Image.asset(product.imageUrl),
+                      SizedBox(height: 10.0),
+                      Text(product.title,
+                          style: TextStyle(
+                              fontSize: 24.0,
+                              fontFamily: 'Oswald',
+                              fontWeight: FontWeight.bold)),
+                      SizedBox(height: 10.0),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          Text('Manchester, United Kingdom',
+                              style: TextStyle(
+                                  fontFamily: 'Oswald', color: Colors.grey)),
+                          Container(
+                              margin: EdgeInsets.symmetric(horizontal: 8.0),
+                              child: Text('|',
+                                  style: TextStyle(color: Colors.grey))),
+                          Text('\$${product.price}',
+                              style: TextStyle(
+                                  fontFamily: 'Oswald', color: Colors.grey))
+                        ],
+                      ),
+                      Container(
+                          padding: EdgeInsets.all(10.0),
+                          child: Text(product.description, textAlign: TextAlign.center))
+                    ]))));
   }
 }

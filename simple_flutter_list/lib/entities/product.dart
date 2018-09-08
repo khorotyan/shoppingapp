@@ -1,8 +1,8 @@
 class Product {
   String title;
-  String details;
+  String description;
   String imageUrl;
   double price;
 
-  Product(this.title, this.details, this.imageUrl, this.price);
+  Product(this.title, this.description, this.imageUrl, this.price);
 }
