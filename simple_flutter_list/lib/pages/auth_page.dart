@@ -12,62 +12,83 @@ class _AuthPageState extends State<AuthPage> {
   String _password;
   bool _acceptTerms = false;
 
+  DecorationImage _buildBackgroundImage() {
+    return DecorationImage(
+        fit: BoxFit.cover,
+        colorFilter:
+            ColorFilter.mode(Colors.yellow.withOpacity(0.8), BlendMode.dstATop),
+        image: AssetImage('images/background.png'));
+  }
+
+  Widget _buildEmailTextField() {
+    return TextField(
+      decoration: InputDecoration(labelText: 'Email', filled: true),
+      keyboardType: TextInputType.emailAddress,
+      onChanged: (String value) {
+        setState(() {
+          _email = value;
+        });
+      },
+    );
+  }
+
+  Widget _buildPasswordTextField() {
+    return TextField(
+      decoration: InputDecoration(labelText: 'Password', filled: true),
+      obscureText: true,
+      onChanged: (String value) {
+        setState(() {
+          _password = value;
+        });
+      },
+    );
+  }
+
+  Widget _buildAcceptSwitch() {
+    return SwitchListTile(
+        value: _acceptTerms,
+        onChanged: (bool value) {
+          setState(() {
+            _acceptTerms = value;
+          });
+        },
+        title: Text('Accept User Terms'));
+  }
+
+  Widget _buildLoginButton() {
+    return RaisedButton(
+      color: Theme.of(context).accentColor,
+      textColor: Colors.white,
+      child: Text('Login'),
+      onPressed: _onLoginClick,
+    );
+  }
+
+  void _onLoginClick() {
+    // pushReplacement means that the current page gets completely
+    //  replaced by the new page (cannot go back to this page from it)
+    //  destroys data that existed in the previous page
+    Navigator.pushReplacementNamed(context, '/products');
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(title: Text('Login')),
         body: Container(
-            decoration: BoxDecoration(
-                image: DecorationImage(
-                    fit: BoxFit.cover,
-                    colorFilter: ColorFilter.mode(
-                        Colors.yellow.withOpacity(0.8), BlendMode.dstATop),
-                    image: AssetImage('images/background.png'))),
+            decoration: BoxDecoration(image: _buildBackgroundImage()),
             padding: EdgeInsets.all(10.0),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: <Widget>[
-                TextField(
-                  decoration: InputDecoration(labelText: 'Email', filled: true),
-                  keyboardType: TextInputType.emailAddress,
-                  onChanged: (String value) {
-                    setState(() {
-                      _email = value;
-                    });
-                  },
-                ),
+                _buildEmailTextField(),
                 SizedBox(height: 12.0),
-                TextField(
-                  decoration: InputDecoration(labelText: 'Password', filled: true),
-                  obscureText: true,
-                  onChanged: (String value) {
-                    setState(() {
-                      _password = value;
-                    });
-                  },
-                ),
+                _buildPasswordTextField(),
                 SizedBox(height: 12.0),
-                SwitchListTile(
-                    value: _acceptTerms,
-                    onChanged: (bool value) {
-                      setState(() {
-                        _acceptTerms = value;
-                      });
-                    },
-                    title: Text('Accept User Terms')),
+                _buildAcceptSwitch(),
                 SizedBox(height: 12.0),
-                RaisedButton(
-                  color: Theme.of(context).accentColor,
-                  textColor: Colors.white,
-                  child: Text('Login'),
-                  onPressed: () {
-                    // pushReplacement means that the current page gets completely
-                    //  replaced by the new page (cannot go back to this page from it)
-                    //  destroys data that existed in the previous page
-                    Navigator.pushReplacementNamed(context, '/products');
-                  },
-                )
+                _buildLoginButton()
               ],
             )));
   }

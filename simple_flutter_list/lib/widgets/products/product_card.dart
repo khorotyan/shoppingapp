@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 
 import '../../entities/product.dart';
 import './price_tag.dart';
+import '../ui_elements/title_default.dart';
+import '../products/address_tag.dart';
 
 class ProductCard extends StatelessWidget {
   final Product product;
@@ -9,47 +11,44 @@ class ProductCard extends StatelessWidget {
 
   ProductCard(this.product, this.productIndex);
 
+  Widget _buildTitlePriceRow() {
+    return Container(
+        padding: EdgeInsets.all(10.0),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            TitleDefault(product.title),
+            SizedBox(width: 10.0),
+            PriceTag(product.price.toString())
+          ],
+        ));
+  }
+
+  Widget _buildActionButtons(BuildContext context) {
+    return ButtonBar(
+      alignment: MainAxisAlignment.center,
+      children: <Widget>[
+        IconButton(
+            icon: Icon(Icons.info),
+            color: Theme.of(context).accentColor,
+            onPressed: () => Navigator.pushNamed<bool>(
+                context, '/product/' + productIndex.toString())),
+        IconButton(
+            icon: Icon(Icons.favorite_border),
+            color: Theme.of(context).accentColor,
+            onPressed: () => {})
+      ],
+    );
+  }
+
   @override
-    Widget build(BuildContext context) {
-      return Card(
+  Widget build(BuildContext context) {
+    return Card(
         child: Column(children: <Widget>[
       Image.asset(product.imageUrl),
-      Container(
-          padding: EdgeInsets.all(10.0),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              Text(product.title,
-                  style: TextStyle(
-                      fontSize: 20.0,
-                      fontWeight: FontWeight.bold,
-                      fontFamily: 'Oswald')),
-              SizedBox(width: 10.0),
-              PriceTag(product.price.toString())
-            ],
-          )),
-      Container(
-        padding: EdgeInsets.symmetric(horizontal: 6.0, vertical: 3.0),
-        decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(5.0),
-            border: Border.all(
-                color: Colors.grey, width: 1.0, style: BorderStyle.solid)),
-        child: Text('Manchester, United Kingdom'),
-      ),
-      ButtonBar(
-        alignment: MainAxisAlignment.center,
-        children: <Widget>[
-          IconButton(
-              icon: Icon(Icons.info),
-              color: Theme.of(context).accentColor,
-              onPressed: () => Navigator.pushNamed<bool>(
-                  context, '/product/' + productIndex.toString())),
-          IconButton(
-              icon: Icon(Icons.favorite_border),
-              color: Theme.of(context).accentColor,
-              onPressed: () => {})
-        ],
-      )
+      _buildTitlePriceRow(),
+      AddressTag('Manchester, United Kingdom'),
+      _buildActionButtons(context)
     ]));
-    }
+  }
 }

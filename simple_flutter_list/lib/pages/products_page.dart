@@ -8,22 +8,26 @@ class ProductsPage extends StatelessWidget {
 
   ProductsPage(this.products);
 
+  Widget _buildSideDrawer(BuildContext context) {
+    return Drawer(
+        child: Column(children: <Widget>[
+      // automaticallyImplyLeading disables the drawer icon
+      AppBar(automaticallyImplyLeading: false, title: Text('Choose')),
+      ListTile(
+        leading: Icon(Icons.edit),
+        title: Text('Manage Products'),
+        onTap: () {
+          Navigator.pushReplacementNamed(context, '/admin');
+        },
+      )
+    ]));
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         // drawer is on the left, endDrawer on the right
-        drawer: Drawer(
-            child: Column(children: <Widget>[
-          // automaticallyImplyLeading disables the drawer icon
-          AppBar(automaticallyImplyLeading: false, title: Text('Choose')),
-          ListTile(
-            leading: Icon(Icons.edit),
-            title: Text('Manage Products'),
-            onTap: () {
-              Navigator.pushReplacementNamed(context, '/admin');
-            },
-          )
-        ])),
+        drawer: _buildSideDrawer(context),
         appBar: AppBar(
           title: Text('Home page'),
           actions: <Widget>[
