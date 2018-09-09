@@ -52,7 +52,6 @@ class _ProductCreatePageState extends State<ProductCreatePage> {
 
   Widget _buildCreateProductButton() {
     return RaisedButton(
-        color: Theme.of(context).accentColor,
         textColor: Colors.white,
         child: Text('Create Product'),
         onPressed: _onCreateProductClick);

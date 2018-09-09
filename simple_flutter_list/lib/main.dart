@@ -45,8 +45,8 @@ class _SimpleAppState extends State<SimpleApp> {
         theme: ThemeData(
             brightness: Brightness.light,
             primarySwatch: Colors.deepOrange,
-            accentColor: Colors.deepOrangeAccent),
-        // home: AuthPage(),
+            accentColor: Colors.deepOrangeAccent,
+            buttonColor: Colors.deepOrangeAccent),
         routes: {
           '/': (BuildContext context) => AuthPage(),
           '/products': (BuildContext context) => ProductsPage(_products),
@@ -79,8 +79,7 @@ class _SimpleAppState extends State<SimpleApp> {
           return MaterialPageRoute(
               // When we want to go to a page that does not exist, then at least go to
               //  this page - the home page
-              builder: (BuildContext context) =>
-                  ProductsPage(_products));
+              builder: (BuildContext context) => ProductsPage(_products));
         });
   }
 }
