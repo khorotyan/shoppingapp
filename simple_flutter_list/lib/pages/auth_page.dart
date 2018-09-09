@@ -71,6 +71,14 @@ class _AuthPageState extends State<AuthPage> {
     Navigator.pushReplacementNamed(context, '/products');
   }
 
+  double _getAuthPageWidth() {
+    final double screenWidth = MediaQuery.of(context).size.width;
+
+    return MediaQuery.of(context).orientation == Orientation.portrait
+        ? screenWidth * 0.95
+        : screenWidth * 0.8;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -78,18 +86,21 @@ class _AuthPageState extends State<AuthPage> {
         body: Container(
             decoration: BoxDecoration(image: _buildBackgroundImage()),
             padding: EdgeInsets.all(10.0),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: <Widget>[
-                _buildEmailTextField(),
-                SizedBox(height: 12.0),
-                _buildPasswordTextField(),
-                SizedBox(height: 12.0),
-                _buildAcceptSwitch(),
-                SizedBox(height: 12.0),
-                _buildLoginButton()
-              ],
-            )));
+            child: Center(
+                child: Container(
+                    width: _getAuthPageWidth(),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: <Widget>[
+                        _buildEmailTextField(),
+                        SizedBox(height: 12.0),
+                        _buildPasswordTextField(),
+                        SizedBox(height: 12.0),
+                        _buildAcceptSwitch(),
+                        SizedBox(height: 12.0),
+                        _buildLoginButton()
+                      ],
+                    )))));
   }
 }
