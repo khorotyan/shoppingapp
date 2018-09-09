@@ -66,13 +66,27 @@ class _ProductCreatePageState extends State<ProductCreatePage> {
     Navigator.pushReplacementNamed(context, '/products');
   }
 
+  double _getPagePadding() {
+    final double deviceWidth = MediaQuery.of(context).size.width;
+
+    final double targetWidth =
+        MediaQuery.of(context).orientation == Orientation.portrait
+            ? deviceWidth * 0.95
+            : deviceWidth * 0.8;
+
+    final double targetPadding = (deviceWidth - targetWidth) / 2;
+
+    return targetPadding;
+  }
+
   @override
   Widget build(BuildContext context) {
     // Return the body of the page, because this is a tab
     //  no need for a Scaffold and appBar
     return Container(
-        margin: EdgeInsets.all(12.0),
-        child: ListView(children: <Widget>[
+        child: ListView(
+            padding: EdgeInsets.symmetric(horizontal: _getPagePadding()),
+            children: <Widget>[
           _buildTitleTextField(),
           _buildDescriptionTextField(),
           _buildPriceTextField(),
