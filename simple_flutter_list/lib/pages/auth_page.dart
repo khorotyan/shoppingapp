@@ -12,6 +12,8 @@ class _AuthPageState extends State<AuthPage> {
   String _password;
   bool _acceptTerms = false;
 
+  final GlobalKey<FormState> _formKey = new GlobalKey<FormState>();
+
   DecorationImage _buildBackgroundImage() {
     return DecorationImage(
         fit: BoxFit.cover,
@@ -21,25 +23,33 @@ class _AuthPageState extends State<AuthPage> {
   }
 
   Widget _buildEmailTextField() {
-    return TextField(
+    return TextFormField(
       decoration: InputDecoration(labelText: 'Email', filled: true),
       keyboardType: TextInputType.emailAddress,
-      onChanged: (String value) {
-        setState(() {
-          _email = value;
-        });
+      validator: (String value) {
+        if (value.isEmpty ||
+            !RegExp(r"[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?")
+                .hasMatch(value)) {
+          return 'Please enter a valid email address';
+        }
+      },
+      onSaved: (String value) {
+        _email = value;
       },
     );
   }
 
   Widget _buildPasswordTextField() {
-    return TextField(
+    return TextFormField(
       decoration: InputDecoration(labelText: 'Password', filled: true),
       obscureText: true,
-      onChanged: (String value) {
-        setState(() {
-          _password = value;
-        });
+      validator: (String value) {
+        if (value.isEmpty || value.length < 6) {
+          return 'Password must have a minimum length of 6';
+        }
+      },
+      onSaved: (String value) {
+        _password = value;
       },
     );
   }
@@ -48,6 +58,7 @@ class _AuthPageState extends State<AuthPage> {
     return SwitchListTile(
         value: _acceptTerms,
         onChanged: (bool value) {
+          // We have setState because we have to rebuild the ui of the switch
           setState(() {
             _acceptTerms = value;
           });
@@ -64,6 +75,12 @@ class _AuthPageState extends State<AuthPage> {
   }
 
   void _onLoginClick() {
+    _formKey.currentState.save();
+
+    if (!_formKey.currentState.validate() || !_acceptTerms) {
+      return;
+    }
+
     // pushReplacement means that the current page gets completely
     //  replaced by the new page (cannot go back to this page from it)
     //  destroys data that existed in the previous page
@@ -88,18 +105,20 @@ class _AuthPageState extends State<AuthPage> {
             child: Center(
                 child: Container(
                     width: _getAuthPageWidth(),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: <Widget>[
-                        _buildEmailTextField(),
-                        SizedBox(height: 12.0),
-                        _buildPasswordTextField(),
-                        SizedBox(height: 12.0),
-                        _buildAcceptSwitch(),
-                        SizedBox(height: 12.0),
-                        _buildLoginButton()
-                      ],
-                    )))));
+                    child: Form(
+                        key: _formKey,
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: <Widget>[
+                            _buildEmailTextField(),
+                            SizedBox(height: 12.0),
+                            _buildPasswordTextField(),
+                            SizedBox(height: 12.0),
+                            _buildAcceptSwitch(),
+                            SizedBox(height: 12.0),
+                            _buildLoginButton()
+                          ],
+                        ))))));
   }
 }

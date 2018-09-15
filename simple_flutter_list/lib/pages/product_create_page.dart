@@ -62,7 +62,7 @@ class _ProductCreatePageState extends State<ProductCreatePage> {
             return 'Product must have a minimum price of 0.99\$';
           } else if (!RegExp(r'^(?:[1-9]\d*|0)?(?:[.,]\d+)?$')
               .hasMatch(value)) {
-            return 'Please input a valid price';
+            return 'Please enter a valid price';
           }
         },
         onSaved: (String value) {
