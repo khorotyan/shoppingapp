@@ -17,22 +17,24 @@ class _ProductCreatePageState extends State<ProductCreatePage> {
   String _title = '';
   String _description = '';
   double _price = 0.0;
+  final GlobalKey<FormState> _formKey = new GlobalKey<FormState>();
 
   Widget _buildTitleTextField() {
-    return TextField(
-        decoration: InputDecoration(labelText: 'Product Title'),
-        onChanged: (String value) {
-          setState(() {
-            _title = value;
-          });
+    return TextFormField(
+      decoration: InputDecoration(labelText: 'Product Title'),
+      onSaved: (String value) {
+        setState(() {
+          _title = value;
         });
+      },
+    );
   }
 
   Widget _buildDescriptionTextField() {
-    return TextField(
+    return TextFormField(
         decoration: InputDecoration(labelText: 'Product Description'),
         maxLines: 5,
-        onChanged: (String value) {
+        onSaved: (String value) {
           setState(() {
             _description = value;
           });
@@ -40,10 +42,10 @@ class _ProductCreatePageState extends State<ProductCreatePage> {
   }
 
   Widget _buildPriceTextField() {
-    return TextField(
+    return TextFormField(
         decoration: InputDecoration(labelText: 'Product Price'),
         keyboardType: TextInputType.number,
-        onChanged: (String value) {
+        onSaved: (String value) {
           setState(() {
             _price = double.parse(value);
           });
@@ -58,6 +60,8 @@ class _ProductCreatePageState extends State<ProductCreatePage> {
   }
 
   void _onCreateProductClick() {
+    _formKey.currentState.save();
+
     final Product product =
         new Product(_title, _description, 'images/img512_512.png', _price);
     widget.addProduct(product);
@@ -83,14 +87,16 @@ class _ProductCreatePageState extends State<ProductCreatePage> {
     // Return the body of the page, because this is a tab
     //  no need for a Scaffold and appBar
     return Container(
-        child: ListView(
-            padding: EdgeInsets.symmetric(horizontal: _getPagePadding()),
-            children: <Widget>[
-          _buildTitleTextField(),
-          _buildDescriptionTextField(),
-          _buildPriceTextField(),
-          SizedBox(height: 10.0),
-          _buildCreateProductButton()
-        ]));
+        child: Form(
+            key: _formKey,
+            child: ListView(
+                padding: EdgeInsets.symmetric(horizontal: _getPagePadding()),
+                children: <Widget>[
+                  _buildTitleTextField(),
+                  _buildDescriptionTextField(),
+                  _buildPriceTextField(),
+                  SizedBox(height: 10.0),
+                  _buildCreateProductButton()
+                ])));
   }
 }
