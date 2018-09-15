@@ -2,10 +2,12 @@ import 'package:flutter/material.dart';
 
 import '../entities/product.dart';
 
-class ProductCreatePage extends StatefulWidget {
+class ProductManagePage extends StatefulWidget {
   final Function addProduct;
+  final Function updateProduct;
+  final Product product;
 
-  ProductCreatePage(this.addProduct);
+  ProductManagePage({this.addProduct, this.updateProduct, this.product});
 
   @override
   State<StatefulWidget> createState() {
@@ -13,7 +15,7 @@ class ProductCreatePage extends StatefulWidget {
   }
 }
 
-class _ProductCreatePageState extends State<ProductCreatePage> {
+class _ProductCreatePageState extends State<ProductManagePage> {
   Product product = new Product('', '', 'images/img512_512.png', 0.0);
 
   TextEditingController priceTextFieldController = new TextEditingController();
@@ -85,7 +87,6 @@ class _ProductCreatePageState extends State<ProductCreatePage> {
   }
 
   void _onCreateProductClick() {
-
     _formKey.currentState.save();
 
     // Calls all the validator methods on the forms,
