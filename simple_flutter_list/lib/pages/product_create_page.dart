@@ -14,9 +14,8 @@ class ProductCreatePage extends StatefulWidget {
 }
 
 class _ProductCreatePageState extends State<ProductCreatePage> {
-  String _title = '';
-  String _description = '';
-  double _price = 0.0;
+  Product product = new Product('', '', 'images/img512_512.png', 0.0);
+
   TextEditingController priceTextFieldController = new TextEditingController();
 
   final GlobalKey<FormState> _formKey = new GlobalKey<FormState>();
@@ -32,9 +31,7 @@ class _ProductCreatePageState extends State<ProductCreatePage> {
         }
       },
       onSaved: (String value) {
-        setState(() {
-          _title = value;
-        });
+        product.title = value;
       },
     );
   }
@@ -51,9 +48,7 @@ class _ProductCreatePageState extends State<ProductCreatePage> {
           }
         },
         onSaved: (String value) {
-          setState(() {
-            _description = value;
-          });
+          product.description = value;
         });
   }
 
@@ -64,23 +59,21 @@ class _ProductCreatePageState extends State<ProductCreatePage> {
         keyboardType: TextInputType.number,
         validator: (String value) {
           if (value.isEmpty) {
-            return 'Product must have a minimum price of 0.01\$';
+            return 'Product must have a minimum price of 0.99\$';
           } else if (!RegExp(r'^(?:[1-9]\d*|0)?(?:[.,]\d+)?$')
               .hasMatch(value)) {
             return 'Please input a valid price';
           }
         },
         onSaved: (String value) {
-          setState(() {
-            double price = double.parse(value);
+          double price = double.parse(value);
 
-            if (price < 0.01) {
-              price = 0.01;
-            }
+          if (price < 0.99) {
+            price = 0.99;
+          }
 
-            _price = price;
-            priceTextFieldController.text = price.toString();
-          });
+          product.price = price;
+          priceTextFieldController.text = price.toString();
         });
   }
 
@@ -92,15 +85,15 @@ class _ProductCreatePageState extends State<ProductCreatePage> {
   }
 
   void _onCreateProductClick() {
+
+    _formKey.currentState.save();
+
     // Calls all the validator methods on the forms,
     //  true if all validations succeeds, false if at least one fails
     if (!_formKey.currentState.validate()) {
-      _formKey.currentState.save();
       return;
     }
 
-    final Product product =
-        new Product(_title, _description, 'images/img512_512.png', _price);
     widget.addProduct(product);
 
     Navigator.pushReplacementNamed(context, '/products');
