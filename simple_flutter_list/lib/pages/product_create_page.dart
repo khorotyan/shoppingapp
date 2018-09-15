@@ -17,11 +17,20 @@ class _ProductCreatePageState extends State<ProductCreatePage> {
   String _title = '';
   String _description = '';
   double _price = 0.0;
+  TextEditingController priceTextFieldController = new TextEditingController();
+
   final GlobalKey<FormState> _formKey = new GlobalKey<FormState>();
 
   Widget _buildTitleTextField() {
     return TextFormField(
       decoration: InputDecoration(labelText: 'Product Title'),
+      validator: (String value) {
+        if (value.isEmpty) {
+          return 'Title field is required';
+        } else if (value.length < 3) {
+          return 'Title must be 3 or more characters long';
+        }
+      },
       onSaved: (String value) {
         setState(() {
           _title = value;
@@ -34,6 +43,13 @@ class _ProductCreatePageState extends State<ProductCreatePage> {
     return TextFormField(
         decoration: InputDecoration(labelText: 'Product Description'),
         maxLines: 5,
+        validator: (String value) {
+          if (value.isEmpty) {
+            return 'Description field is required';
+          } else if (value.length < 15) {
+            return 'Description must be 15 or more characters long';
+          }
+        },
         onSaved: (String value) {
           setState(() {
             _description = value;
@@ -43,11 +59,26 @@ class _ProductCreatePageState extends State<ProductCreatePage> {
 
   Widget _buildPriceTextField() {
     return TextFormField(
+        controller: priceTextFieldController,
         decoration: InputDecoration(labelText: 'Product Price'),
         keyboardType: TextInputType.number,
+        validator: (String value) {
+          if (value.isEmpty) {
+            return 'Product must have a minimum price of 0.01\$';
+          } else if (!RegExp(r'^(?:[1-9]\d*|0)?(?:[.,]\d+)?$').hasMatch(value)) {
+            return 'Please input a valid price';
+          }
+        },
         onSaved: (String value) {
           setState(() {
-            _price = double.parse(value);
+            double price = double.parse(value);
+
+            if (price < 0.01) {
+              price = 0.01;
+            }
+
+            _price = price;
+            priceTextFieldController.text = price.toString();
           });
         });
   }
@@ -60,7 +91,12 @@ class _ProductCreatePageState extends State<ProductCreatePage> {
   }
 
   void _onCreateProductClick() {
-    _formKey.currentState.save();
+    // Calls all the validator methods on the forms,
+    //  true if all validations succeeds, false if at least one fails
+    if (!_formKey.currentState.validate()) {
+      _formKey.currentState.save();
+      return;
+    }
 
     final Product product =
         new Product(_title, _description, 'images/img512_512.png', _price);
