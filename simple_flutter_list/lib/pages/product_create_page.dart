@@ -65,7 +65,8 @@ class _ProductCreatePageState extends State<ProductCreatePage> {
         validator: (String value) {
           if (value.isEmpty) {
             return 'Product must have a minimum price of 0.01\$';
-          } else if (!RegExp(r'^(?:[1-9]\d*|0)?(?:[.,]\d+)?$').hasMatch(value)) {
+          } else if (!RegExp(r'^(?:[1-9]\d*|0)?(?:[.,]\d+)?$')
+              .hasMatch(value)) {
             return 'Please input a valid price';
           }
         },
@@ -122,17 +123,25 @@ class _ProductCreatePageState extends State<ProductCreatePage> {
   Widget build(BuildContext context) {
     // Return the body of the page, because this is a tab
     //  no need for a Scaffold and appBar
-    return Container(
-        child: Form(
-            key: _formKey,
-            child: ListView(
-                padding: EdgeInsets.symmetric(horizontal: _getPagePadding()),
-                children: <Widget>[
-                  _buildTitleTextField(),
-                  _buildDescriptionTextField(),
-                  _buildPriceTextField(),
-                  SizedBox(height: 10.0),
-                  _buildCreateProductButton()
-                ])));
+    return GestureDetector(
+        onTap: () {
+          // Creating an empty focus node - FocusNode(), closes the keyboard
+          //  as whenever a user taps on a TextField, the focus node of the app
+          //  becomes the node of the TextField, passing an empty one thus, removes the focus node
+          FocusScope.of(context).requestFocus(FocusNode());
+        },
+        child: Container(
+            child: Form(
+                key: _formKey,
+                child: ListView(
+                    padding:
+                        EdgeInsets.symmetric(horizontal: _getPagePadding()),
+                    children: <Widget>[
+                      _buildTitleTextField(),
+                      _buildDescriptionTextField(),
+                      _buildPriceTextField(),
+                      SizedBox(height: 10.0),
+                      _buildCreateProductButton()
+                    ]))));
   }
 }
