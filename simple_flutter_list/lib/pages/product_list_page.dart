@@ -10,6 +10,32 @@ class ProductListPage extends StatelessWidget {
 
   ProductListPage(this.products, this.updateProduct, this.removeProduct);
 
+  Widget _buildEditButton(BuildContext context, int index) {
+    return IconButton(
+      icon: Icon(Icons.edit),
+      onPressed: () {
+        Navigator
+            .of(context)
+            .push(MaterialPageRoute(builder: (BuildContext context) {
+          return ProductManagePage(
+              product: products[index],
+              updateProduct: updateProduct,
+              productIndex: index);
+        }));
+      },
+    );
+  }
+
+  Widget _buildListItem(BuildContext context, int index) {
+    return ListTile(
+        leading: CircleAvatar(
+            backgroundImage: AssetImage(products[index].imageUrl),
+            radius: 22.0),
+        title: Text(products[index].title),
+        subtitle: Text('\$${products[index].price}'),
+        trailing: _buildEditButton(context, index));
+  }
+
   @override
   Widget build(BuildContext context) {
     return ListView.builder(
@@ -21,7 +47,7 @@ class ProductListPage extends StatelessWidget {
                 }
               },
               background: Container(
-                padding: EdgeInsets.only(right: 16.0),
+                  padding: EdgeInsets.only(right: 16.0),
                   alignment: Alignment(1.0, 0.0),
                   child: Text('Delete',
                       style: TextStyle(color: Colors.white, fontSize: 18.0)),
@@ -29,24 +55,7 @@ class ProductListPage extends StatelessWidget {
               direction: DismissDirection.endToStart,
               key: Key(products[index].title),
               child: Column(children: <Widget>[
-                ListTile(
-                    leading: CircleAvatar(
-                        backgroundImage: AssetImage(products[index].imageUrl),
-                        radius: 22.0),
-                    title: Text(products[index].title),
-                    subtitle: Text('\$${products[index].price}'),
-                    trailing: IconButton(
-                      icon: Icon(Icons.edit),
-                      onPressed: () {
-                        Navigator.of(context).push(
-                            MaterialPageRoute(builder: (BuildContext context) {
-                          return ProductManagePage(
-                              product: products[index],
-                              updateProduct: updateProduct,
-                              productIndex: index);
-                        }));
-                      },
-                    )),
+                _buildListItem(context, index),
                 Divider()
               ]));
         },
