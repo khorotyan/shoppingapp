@@ -13,25 +13,28 @@ class ProductListPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListView.builder(
         itemBuilder: (BuildContext context, int index) {
-          return Container(
-              margin: EdgeInsets.all(4.0),
-              child: ListTile(
-                  contentPadding: EdgeInsets.all(10.0),
-                  leading: Image.asset(products[index].imageUrl,
-                      height: 60.0, width: 60.0),
-                  title: Text(products[index].title),
-                  trailing: IconButton(
-                    icon: Icon(Icons.edit),
-                    onPressed: () {
-                      Navigator.of(context).push(
-                          MaterialPageRoute(builder: (BuildContext context) {
-                        return ProductManagePage(
-                            product: products[index],
-                            updateProduct: updateProduct,
-                            productIndex: index);
-                      }));
-                    },
-                  )));
+          return Column(children: <Widget>[
+            ListTile(
+                contentPadding: EdgeInsets.symmetric(horizontal: 14.0),
+                leading: CircleAvatar(
+                    backgroundImage: AssetImage(products[index].imageUrl),
+                    radius: 22.0),
+                title: Text(products[index].title),
+                subtitle: Text('\$${products[index].price}'),
+                trailing: IconButton(
+                  icon: Icon(Icons.edit),
+                  onPressed: () {
+                    Navigator.of(context).push(
+                        MaterialPageRoute(builder: (BuildContext context) {
+                      return ProductManagePage(
+                          product: products[index],
+                          updateProduct: updateProduct,
+                          productIndex: index);
+                    }));
+                  },
+                )),
+            Divider()
+          ]);
         },
         itemCount: products.length);
   }
