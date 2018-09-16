@@ -1,13 +1,16 @@
 import 'package:flutter/material.dart';
 
 import '../entities/product.dart';
+import '../helpers/ensure_visible.dart';
 
 class ProductManagePage extends StatefulWidget {
   final Function addProduct;
   final Function updateProduct;
   final Product product;
+  final int productIndex;
 
-  ProductManagePage({this.addProduct, this.updateProduct, this.product});
+  ProductManagePage(
+      {this.addProduct, this.updateProduct, this.product, this.productIndex});
 
   @override
   State<StatefulWidget> createState() {
@@ -16,73 +19,96 @@ class ProductManagePage extends StatefulWidget {
 }
 
 class _ProductCreatePageState extends State<ProductManagePage> {
-  Product product = new Product('', '', 'images/img512_512.png', 0.0);
+  Product _product = new Product('', '', 'images/img512_512.png', 0.0);
 
-  TextEditingController priceTextFieldController = new TextEditingController();
+  TextEditingController _priceTextFieldController;
 
   final GlobalKey<FormState> _formKey = new GlobalKey<FormState>();
+  final _titleFocusNode = FocusNode();
+  final _descriptionFocusNode = FocusNode();
+  final _priceFocusNode = FocusNode();
+
+  @override
+  void initState() {
+    _priceTextFieldController =
+      TextEditingController(text: widget.product != null ? widget.product.price.toString() : '');
+
+    super.initState();
+  }
 
   Widget _buildTitleTextField() {
-    return TextFormField(
-      decoration: InputDecoration(labelText: 'Product Title'),
-      validator: (String value) {
-        if (value.isEmpty) {
-          return 'Title field is required';
-        } else if (value.length < 3) {
-          return 'Title must be 3 or more characters long';
-        }
-      },
-      onSaved: (String value) {
-        product.title = value;
-      },
-    );
+    return EnsureVisibleWhenFocused(
+        focusNode: _titleFocusNode,
+        child: TextFormField(
+          focusNode: _titleFocusNode,
+          decoration: InputDecoration(labelText: 'Product Title'),
+          initialValue: widget.product != null ? widget.product.title : '',
+          validator: (String value) {
+            if (value.isEmpty) {
+              return 'Title field is required';
+            } else if (value.length < 3) {
+              return 'Title must be 3 or more characters long';
+            }
+          },
+          onSaved: (String value) {
+            _product.title = value;
+          },
+        ));
   }
 
   Widget _buildDescriptionTextField() {
-    return TextFormField(
-        decoration: InputDecoration(labelText: 'Product Description'),
-        maxLines: 5,
-        validator: (String value) {
-          if (value.isEmpty) {
-            return 'Description field is required';
-          } else if (value.length < 15) {
-            return 'Description must be 15 or more characters long';
-          }
-        },
-        onSaved: (String value) {
-          product.description = value;
-        });
+    return EnsureVisibleWhenFocused(
+        focusNode: _descriptionFocusNode,
+        child: TextFormField(
+            focusNode: _descriptionFocusNode,
+            decoration: InputDecoration(labelText: 'Product Description'),
+            maxLines: 5,
+            initialValue:
+                widget.product != null ? widget.product.description : '',
+            validator: (String value) {
+              if (value.isEmpty) {
+                return 'Description field is required';
+              } else if (value.length < 15) {
+                return 'Description must be 15 or more characters long';
+              }
+            },
+            onSaved: (String value) {
+              _product.description = value;
+            }));
   }
 
   Widget _buildPriceTextField() {
-    return TextFormField(
-        controller: priceTextFieldController,
-        decoration: InputDecoration(labelText: 'Product Price'),
-        keyboardType: TextInputType.number,
-        validator: (String value) {
-          if (value.isEmpty) {
-            return 'Product must have a minimum price of 0.99\$';
-          } else if (!RegExp(r'^(?:[1-9]\d*|0)?(?:[.,]\d+)?$')
-              .hasMatch(value)) {
-            return 'Please enter a valid price';
-          }
-        },
-        onSaved: (String value) {
-          double price = double.parse(value);
+    return EnsureVisibleWhenFocused(
+        focusNode: _priceFocusNode,
+        child: TextFormField(
+            focusNode: _priceFocusNode,
+            controller: _priceTextFieldController,
+            decoration: InputDecoration(labelText: 'Product Price'),
+            keyboardType: TextInputType.number,
+            validator: (String value) {
+              if (value.isEmpty) {
+                return 'Product must have a minimum price of 0.99\$';
+              } else if (!RegExp(r'^(?:[1-9]\d*|0)?(?:[.,]\d+)?$')
+                  .hasMatch(value)) {
+                return 'Please enter a valid price';
+              }
+            },
+            onSaved: (String value) {
+              double price = double.parse(value);
 
-          if (price < 0.99) {
-            price = 0.99;
-          }
+              if (price < 0.99) {
+                price = 0.99;
+              }
 
-          product.price = price;
-          priceTextFieldController.text = price.toString();
-        });
+              _product.price = price;
+              _priceTextFieldController.text = price.toString();
+            }));
   }
 
   Widget _buildCreateProductButton() {
     return RaisedButton(
         textColor: Colors.white,
-        child: Text('Create Product'),
+        child: Text('Save'),
         onPressed: _onCreateProductClick);
   }
 
@@ -95,7 +121,11 @@ class _ProductCreatePageState extends State<ProductManagePage> {
       return;
     }
 
-    widget.addProduct(product);
+    if (widget.product == null) {
+      widget.addProduct(_product);
+    } else {
+      widget.updateProduct(widget.productIndex, _product);
+    }
 
     Navigator.pushReplacementNamed(context, '/products');
   }
@@ -115,9 +145,9 @@ class _ProductCreatePageState extends State<ProductManagePage> {
 
   @override
   Widget build(BuildContext context) {
-    // Return the body of the page, because this is a tab
-    //  no need for a Scaffold and appBar
-    return GestureDetector(
+    final Widget pageContent = GestureDetector(
+        // Return the body of the page, because this is a tab
+        //  no need for a Scaffold and appBar
         onTap: () {
           // Creating an empty focus node - FocusNode(), closes the keyboard
           //  as whenever a user taps on a TextField, the focus node of the app
@@ -137,5 +167,10 @@ class _ProductCreatePageState extends State<ProductManagePage> {
                       SizedBox(height: 10.0),
                       _buildCreateProductButton()
                     ]))));
+
+    return widget.product == null
+        ? pageContent
+        : Scaffold(
+            appBar: AppBar(title: Text('Edit Product')), body: pageContent);
   }
 }

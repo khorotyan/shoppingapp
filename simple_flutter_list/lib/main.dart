@@ -33,6 +33,12 @@ class _SimpleAppState extends State<SimpleApp> {
     });
   }
 
+  void _updateProduct(int index, Product newProduct) {
+    setState(() {
+      _products[index] = newProduct;
+    });
+  }
+
   void _removeProduct(int index) {
     setState(() {
       _products.removeAt(index);
@@ -50,8 +56,8 @@ class _SimpleAppState extends State<SimpleApp> {
         routes: {
           '/': (BuildContext context) => AuthPage(),
           '/products': (BuildContext context) => ProductsPage(_products),
-          '/admin': (BuildContext context) =>
-              ProductsAdminPage(_addProduct, _removeProduct, _products)
+          '/admin': (BuildContext context) => ProductsAdminPage(
+              _addProduct, _updateProduct, _removeProduct, _products)
         },
 
         // Executed when we navigate to a named route
