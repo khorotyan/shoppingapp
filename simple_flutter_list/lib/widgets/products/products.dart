@@ -1,18 +1,15 @@
 import 'package:flutter/material.dart';
 
+import 'package:scoped_model/scoped_model.dart';
+
+import '../../models/product.dart';
+import '../../scoped_models/products_model.dart';
 import './product_card.dart';
-import '../../entities/product.dart';
 
 // The class contains a product
 class Products extends StatelessWidget {
-  // final - value is unchangable
-  final List<Product> products;
-
-  // this.products automatically does: this.products = products
-  Products(this.products);
-
   // Show the products list or text stating that there are no products
-  Widget _buildProductList() {
+  Widget _buildProductList(List<Product> products) {
     Widget
         productCards = // = Container() // if we do not want to render anything
         Center(child: Text('Empty products list, please add some!'));
@@ -30,6 +27,9 @@ class Products extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return _buildProductList();
+    return ScopedModelDescendant<ProductsModel>(
+        builder: (BuildContext context, Widget child, ProductsModel model) {
+      return _buildProductList(model.products);
+    });
   }
 }

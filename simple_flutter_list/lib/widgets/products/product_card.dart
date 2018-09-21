@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../entities/product.dart';
+import '../../models/product.dart';
 import './price_tag.dart';
 import '../ui_elements/title_default.dart';
 import '../products/address_tag.dart';

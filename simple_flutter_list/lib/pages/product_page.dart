@@ -1,15 +1,18 @@
 import 'package:flutter/material.dart';
 import 'dart:async';
 
-import '../entities/product.dart';
+import 'package:scoped_model/scoped_model.dart';
+
+import '../models/product.dart';
+import '../scoped_models/products_model.dart';
 import '../widgets/ui_elements/title_default.dart';
 
 class ProductPage extends StatelessWidget {
-  final Product product;
+  final int productIndex;
 
-  ProductPage(this.product);
+  ProductPage(this.productIndex);
 
-  Widget _buildAddressPriceRow() {
+  Widget _buildAddressPriceRow(double price) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget>[
@@ -18,7 +21,7 @@ class ProductPage extends StatelessWidget {
         Container(
             margin: EdgeInsets.symmetric(horizontal: 8.0),
             child: Text('|', style: TextStyle(color: Colors.grey))),
-        Text('\$${product.price}',
+        Text('\$$price',
             style: TextStyle(fontFamily: 'Oswald', color: Colors.grey))
       ],
     );
@@ -30,29 +33,33 @@ class ProductPage extends StatelessWidget {
         // WillPopScope used for getting back from this page
         // onWillPop executed when clicking the back button
         onWillPop: () {
-          // pass false as a parameter, meaning that we do not want to delete the product
-          Navigator.pop(context, false);
-          // Allows the user to leave the page, pass true if leaving without the pop method
-          return Future.value(false);
-          // Some other functionality can be executed here too
-        },
-        child: Scaffold(
-            appBar: AppBar(title: Text(product.title)),
-            body: Container(
-                padding: EdgeInsets.all(6.0),
-                child: Column(
-                    crossAxisAlignment:
-                        CrossAxisAlignment.center, // Horizontal alignment
-                    children: <Widget>[
-                      Image.asset(product.imageUrl),
-                      SizedBox(height: 10.0),
-                      TitleDefault(product.title),
-                      SizedBox(height: 10.0),
-                      _buildAddressPriceRow(),
-                      Container(
-                          padding: EdgeInsets.all(10.0),
-                          child: Text(product.description,
-                              textAlign: TextAlign.center))
-                    ]))));
+      // pass false as a parameter, meaning that we do not want to delete the product
+      Navigator.pop(context, false);
+      // Allows the user to leave the page, pass true if leaving without the pop method
+      return Future.value(false);
+      // Some other functionality can be executed here too
+    }, child: ScopedModelDescendant(
+            builder: (BuildContext context, Widget child, ProductsModel model) {
+      final Product product = model.products[productIndex];
+
+      return Scaffold(
+          appBar: AppBar(title: Text(product.title)),
+          body: Container(
+              padding: EdgeInsets.all(6.0),
+              child: Column(
+                  crossAxisAlignment:
+                      CrossAxisAlignment.center, // Horizontal alignment
+                  children: <Widget>[
+                    Image.asset(product.imageUrl),
+                    SizedBox(height: 10.0),
+                    TitleDefault(product.title),
+                    SizedBox(height: 10.0),
+                    _buildAddressPriceRow(product.price),
+                    Container(
+                        padding: EdgeInsets.all(10.0),
+                        child: Text(product.description,
+                            textAlign: TextAlign.center))
+                  ])));
+    }));
   }
 }
