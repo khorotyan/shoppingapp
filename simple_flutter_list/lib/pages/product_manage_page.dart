@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:scoped_model/scoped_model.dart';
 
 import '../models/product.dart';
-import '../scoped_models/products_model.dart';
+import '../scoped_models/main_model.dart';
 import '../helpers/ensure_visible.dart';
 
 class ProductManagePage extends StatefulWidget {
@@ -82,7 +82,7 @@ class _ProductCreatePageState extends State<ProductManagePage> {
             }));
   }
 
-  Widget _buildCreateProductButton(ProductsModel model) {
+  Widget _buildCreateProductButton(MainModel model) {
     return RaisedButton(
         textColor: Colors.white,
         child: Text('Save'),
@@ -124,8 +124,8 @@ class _ProductCreatePageState extends State<ProductManagePage> {
 
   @override
   Widget build(BuildContext context) {
-    return ScopedModelDescendant<ProductsModel>(
-        builder: (BuildContext context, Widget child, ProductsModel model) {
+    return ScopedModelDescendant<MainModel>(
+        builder: (BuildContext context, Widget child, MainModel model) {
       final Widget pageContent = GestureDetector(
           // Return the body of the page, because this is a tab
           //  no need for a Scaffold and appBar

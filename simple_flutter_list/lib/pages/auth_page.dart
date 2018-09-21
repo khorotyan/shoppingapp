@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
 
+import 'package:scoped_model/scoped_model.dart';
+
+import '../scoped_models/main_model.dart';
+
 class AuthPage extends StatefulWidget {
   @override
   State<StatefulWidget> createState() {
@@ -67,19 +71,24 @@ class _AuthPageState extends State<AuthPage> {
   }
 
   Widget _buildLoginButton() {
-    return RaisedButton(
-      textColor: Colors.white,
-      child: Text('Login'),
-      onPressed: _onLoginClick,
-    );
+    return ScopedModelDescendant<MainModel>(
+        builder: (BuildContext context, Widget child, MainModel model) {
+      return RaisedButton(
+        textColor: Colors.white,
+        child: Text('Login'),
+        onPressed: () => _onLoginClick(model.login),
+      );
+    });
   }
 
-  void _onLoginClick() {
+  void _onLoginClick(Function login) {
     _formKey.currentState.save();
 
     if (!_formKey.currentState.validate() || !_acceptTerms) {
       return;
     }
+
+    login(_email, _password);
 
     // pushReplacement means that the current page gets completely
     //  replaced by the new page (cannot go back to this page from it)
