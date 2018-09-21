@@ -10,8 +10,7 @@ import './product_card.dart';
 class Products extends StatelessWidget {
   // Show the products list or text stating that there are no products
   Widget _buildProductList(List<Product> products) {
-    Widget
-        productCards = // = Container() // if we do not want to render anything
+    Widget productCards =
         Center(child: Text('Empty products list, please add some!'));
 
     if (products.length > 0) {
@@ -29,7 +28,7 @@ class Products extends StatelessWidget {
   Widget build(BuildContext context) {
     return ScopedModelDescendant<ProductsModel>(
         builder: (BuildContext context, Widget child, ProductsModel model) {
-      return _buildProductList(model.products);
+      return _buildProductList(model.displayedProducts);
     });
   }
 }
