@@ -1,4 +1,5 @@
 class Product {
+  String id;
   String title;
   String description;
   String imageUrl;
@@ -7,7 +8,7 @@ class Product {
   String userId;
   String userEmail;
 
-  Product(this.title, this.description, this.imageUrl, this.price, this.userId,
+  Product(this.id, this.title, this.description, this.imageUrl, this.price, this.userId,
       this.userEmail,
       [this.isFavorite = false]);
 }

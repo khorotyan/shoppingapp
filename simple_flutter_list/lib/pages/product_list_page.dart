@@ -25,7 +25,7 @@ class ProductListPage extends StatelessWidget {
   Widget _buildListItem(BuildContext context, int index, MainModel model) {
     return ListTile(
         leading: CircleAvatar(
-            backgroundImage: AssetImage(model.allProducts[index].imageUrl),
+            backgroundImage: NetworkImage(model.allProducts[index].imageUrl),
             radius: 22.0),
         title: Text(model.allProducts[index].title),
         subtitle: Text('\$${model.allProducts[index].price}'),

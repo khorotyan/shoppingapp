@@ -14,7 +14,7 @@ class ProductManagePage extends StatefulWidget {
 }
 
 class _ProductCreatePageState extends State<ProductManagePage> {
-  Product _product = new Product('', '', 'images/img512_512.png', 0.0, '', '');
+  Product _product = new Product('', '', '', 'images/img512_512.png', 0.0, '', '');
 
   final GlobalKey<FormState> _formKey = new GlobalKey<FormState>();
   final _titleFocusNode = FocusNode();
