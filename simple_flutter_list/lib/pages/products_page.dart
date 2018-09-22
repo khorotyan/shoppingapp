@@ -6,18 +6,20 @@ import '../widgets/products/products.dart';
 import '../scoped_models/main_model.dart';
 
 class ProductsPage extends StatefulWidget {
+  final MainModel mainModel;
+
+  ProductsPage(this.mainModel);
+
   @override
-    State<StatefulWidget> createState() {
-      return _ProductsPageState();
-    }
+  State<StatefulWidget> createState() {
+    return _ProductsPageState();
+  }
 }
 
 class _ProductsPageState extends State<ProductsPage> {
   @override
   initState() {
-    ScopedModelDescendant<MainModel>(builder: (BuildContext context, Widget child, MainModel model) {
-      model.fetchProducts();
-    });
+    widget.mainModel.fetchProducts();
     super.initState();
   }
 
@@ -44,8 +46,8 @@ class _ProductsPageState extends State<ProductsPage> {
         appBar: AppBar(
           title: Text('Home page'),
           actions: <Widget>[
-            ScopedModelDescendant<MainModel>(builder:
-                (BuildContext context, Widget child, MainModel model) {
+            ScopedModelDescendant<MainModel>(
+                builder: (BuildContext context, Widget child, MainModel model) {
               IconData icon =
                   model.showFavorites ? Icons.favorite : Icons.favorite_border;
 

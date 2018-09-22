@@ -47,8 +47,7 @@ class ProductsModel extends ConnectedProductsModel {
     final Map<String, dynamic> productData = {
       'title': product.title,
       'description': product.description,
-      'image':
-          'https://yt3.ggpht.com/-tWsZd32F8kY/AAAAAAAAAAI/AAAAAAAAAAA/WrxnIMGaU3Y/nd/photo.jpg',
+      'imageUrl': product.imageUrl,
       'price': product.price,
       'userId': product.userId,
       'userEmail': product.userEmail
@@ -77,8 +76,8 @@ class ProductsModel extends ConnectedProductsModel {
     var response = await http.get(_serviceUrl);
 
     List<Product> fetchedProducts = new List<Product>();
-    Map<String, dynamic> productsData =
-        json.decode(response.body);
+    Map<String, dynamic> productsData = json.decode(response.body);
+
     productsData.forEach((String productId, dynamic productData) {
       Product product = Product(
           productId,
@@ -89,7 +88,7 @@ class ProductsModel extends ConnectedProductsModel {
           productData['userId'],
           productData['userEmail']);
 
-        fetchedProducts.add(product);
+      fetchedProducts.add(product);
     });
 
     products = fetchedProducts;

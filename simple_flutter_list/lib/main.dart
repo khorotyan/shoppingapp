@@ -29,8 +29,9 @@ class SimpleApp extends StatefulWidget {
 class _SimpleAppState extends State<SimpleApp> {
   @override
   Widget build(BuildContext context) {
+    final MainModel mainModel = MainModel();
     return ScopedModel<MainModel>(
-        model: MainModel(),
+        model: mainModel,
         child: MaterialApp(
             theme: ThemeData(
                 brightness: Brightness.light,
@@ -39,7 +40,7 @@ class _SimpleAppState extends State<SimpleApp> {
                 buttonColor: Colors.deepOrangeAccent),
             routes: {
               '/': (BuildContext context) => AuthPage(),
-              '/products': (BuildContext context) => ProductsPage(),
+              '/products': (BuildContext context) => ProductsPage(mainModel),
               '/admin': (BuildContext context) => ProductsAdminPage()
             },
 
@@ -67,7 +68,7 @@ class _SimpleAppState extends State<SimpleApp> {
               return MaterialPageRoute(
                   // When we want to go to a page that does not exist, then at least go to
                   //  this page - the home page
-                  builder: (BuildContext context) => ProductsPage());
+                  builder: (BuildContext context) => ProductsPage(mainModel));
             }));
   }
 }

@@ -87,7 +87,7 @@ class _AuthPageState extends State<AuthPage> {
     if (!_formKey.currentState.validate() || !_acceptTerms) {
       return;
     }
-
+    
     login(_email, _password);
 
     // pushReplacement means that the current page gets completely
