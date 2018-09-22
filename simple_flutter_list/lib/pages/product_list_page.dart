@@ -6,8 +6,7 @@ import '../scoped_models/main_model.dart';
 import './product_manage_page.dart';
 
 class ProductListPage extends StatelessWidget {
-  Widget _buildEditButton(
-      BuildContext context, int index, MainModel model) {
+  Widget _buildEditButton(BuildContext context, int index, MainModel model) {
     return IconButton(
       icon: Icon(Icons.edit),
       onPressed: () {
@@ -16,7 +15,9 @@ class ProductListPage extends StatelessWidget {
             .of(context)
             .push(MaterialPageRoute(builder: (BuildContext context) {
           return ProductManagePage();
-        }));
+        })).then((_) {
+          model.selectProduct(null);
+        });
       },
     );
   }
@@ -24,10 +25,10 @@ class ProductListPage extends StatelessWidget {
   Widget _buildListItem(BuildContext context, int index, MainModel model) {
     return ListTile(
         leading: CircleAvatar(
-            backgroundImage: AssetImage(model.products[index].imageUrl),
+            backgroundImage: AssetImage(model.allProducts[index].imageUrl),
             radius: 22.0),
-        title: Text(model.products[index].title),
-        subtitle: Text('\$${model.products[index].price}'),
+        title: Text(model.allProducts[index].title),
+        subtitle: Text('\$${model.allProducts[index].price}'),
         trailing: _buildEditButton(context, index, model));
   }
 
@@ -42,6 +43,7 @@ class ProductListPage extends StatelessWidget {
                   if (direction == DismissDirection.endToStart) {
                     model.selectProduct(index);
                     model.removeProduct();
+                    model.selectProduct(null);
                   }
                 },
                 background: Container(
@@ -51,13 +53,13 @@ class ProductListPage extends StatelessWidget {
                         style: TextStyle(color: Colors.white, fontSize: 18.0)),
                     color: Colors.red),
                 direction: DismissDirection.endToStart,
-                key: Key(model.products[index].title),
+                key: Key(model.allProducts[index].title),
                 child: Column(children: <Widget>[
                   _buildListItem(context, index, model),
                   Divider()
                 ]));
           },
-          itemCount: model.products.length);
+          itemCount: model.allProducts.length);
     });
   }
 }

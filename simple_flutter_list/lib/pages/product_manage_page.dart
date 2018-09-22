@@ -14,7 +14,7 @@ class ProductManagePage extends StatefulWidget {
 }
 
 class _ProductCreatePageState extends State<ProductManagePage> {
-  Product _product = new Product('', '', 'images/img512_512.png', 0.0);
+  Product _product = new Product('', '', 'images/img512_512.png', 0.0, '', '');
 
   final GlobalKey<FormState> _formKey = new GlobalKey<FormState>();
   final _titleFocusNode = FocusNode();
@@ -87,11 +87,14 @@ class _ProductCreatePageState extends State<ProductManagePage> {
         textColor: Colors.white,
         child: Text('Save'),
         onPressed: () => _onCreateProductClick(
-            model.addProduct, model.updateProduct, model.selectedProductIndex));
+            model.addProduct,
+            model.updateProduct,
+            model.selectProduct,
+            model.selectedProductIndex));
   }
 
-  void _onCreateProductClick(
-      Function addProduct, Function updateProduct, int selectedProductIndex) {
+  void _onCreateProductClick(Function addProduct, Function updateProduct,
+      Function setSelectedProduct, int selectedProductIndex) {
     _formKey.currentState.save();
 
     // Calls all the validator methods on the forms,
@@ -106,7 +109,9 @@ class _ProductCreatePageState extends State<ProductManagePage> {
       updateProduct(_product);
     }
 
-    Navigator.pushReplacementNamed(context, '/products');
+    Navigator
+        .pushReplacementNamed(context, '/products')
+        .then((_) => setSelectedProduct(null));
   }
 
   double _getPagePadding() {
@@ -150,7 +155,7 @@ class _ProductCreatePageState extends State<ProductManagePage> {
                       ]))));
 
       return model.selectedProductIndex == null
-          ? Card(child: pageContent)
+          ? pageContent
           : Scaffold(
               appBar: AppBar(title: Text('Edit Product')), body: pageContent);
     });

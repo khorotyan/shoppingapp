@@ -38,7 +38,7 @@ class ProductCard extends StatelessWidget {
                 context, '/product/' + productIndex.toString())),
         ScopedModelDescendant<MainModel>(
             builder: (BuildContext context, Widget child, MainModel model) {
-          IconData favoriteIcon = model.products[productIndex].isFavorite
+          IconData favoriteIcon = model.allProducts[productIndex].isFavorite
               ? Icons.favorite
               : Icons.favorite_border;
 
@@ -61,6 +61,8 @@ class ProductCard extends StatelessWidget {
       Image.asset(product.imageUrl),
       _buildTitlePriceRow(),
       AddressTag('Manchester, United Kingdom'),
+      SizedBox(height: 12.0),
+      Text(product.userEmail),
       _buildActionButtons(context)
     ]));
   }

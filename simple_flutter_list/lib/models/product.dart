@@ -4,6 +4,10 @@ class Product {
   String imageUrl;
   double price;
   bool isFavorite;
+  String userId;
+  String userEmail;
 
-  Product(this.title, this.description, this.imageUrl, this.price, [this.isFavorite = false]);
+  Product(this.title, this.description, this.imageUrl, this.price, this.userId,
+      this.userEmail,
+      [this.isFavorite = false]);
 }
