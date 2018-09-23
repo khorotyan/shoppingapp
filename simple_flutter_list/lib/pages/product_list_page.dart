@@ -5,7 +5,24 @@ import 'package:scoped_model/scoped_model.dart';
 import '../scoped_models/main_model.dart';
 import './product_manage_page.dart';
 
-class ProductListPage extends StatelessWidget {
+class ProductListPage extends StatefulWidget {
+  final MainModel model;
+
+  ProductListPage(this.model);
+
+  @override
+    State<StatefulWidget> createState() {
+      return _ProductListPageState();
+    }
+}
+
+class _ProductListPageState extends State<ProductListPage> {
+  @override
+  initState() {
+    widget.model.fetchProducts();
+    super.initState();
+  }
+
   Widget _buildEditButton(BuildContext context, int index, MainModel model) {
     return IconButton(
       icon: Icon(Icons.edit),
@@ -43,7 +60,6 @@ class ProductListPage extends StatelessWidget {
                   if (direction == DismissDirection.endToStart) {
                     model.selectProduct(index);
                     model.removeProduct();
-                    model.selectProduct(null);
                   }
                 },
                 background: Container(

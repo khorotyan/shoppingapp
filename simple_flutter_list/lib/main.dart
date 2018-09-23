@@ -41,7 +41,7 @@ class _SimpleAppState extends State<SimpleApp> {
             routes: {
               '/': (BuildContext context) => AuthPage(),
               '/products': (BuildContext context) => ProductsPage(mainModel),
-              '/admin': (BuildContext context) => ProductsAdminPage()
+              '/admin': (BuildContext context) => ProductsAdminPage(mainModel)
             },
 
             // Executed when we navigate to a named route

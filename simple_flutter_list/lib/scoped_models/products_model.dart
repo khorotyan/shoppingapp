@@ -8,7 +8,8 @@ import '../models/product.dart';
 
 class ProductsModel extends ConnectedProductsModel {
   static const String _serviceUrl =
-      'https://flutter-shopping-ce8bc.firebaseio.com/products.json';
+      'https://flutter-shopping-ce8bc.firebaseio.com/products';
+  static const String _serviceExtension = '.json';
 
   bool _showFavorites = false;
   bool _isLoading = false;
@@ -60,7 +61,7 @@ class ProductsModel extends ConnectedProductsModel {
 
     _isLoading = true;
     notifyListeners();
-    var response = await http.post(_serviceUrl, body: json.encode(productData));
+    var response = await http.post(_serviceUrl + _serviceExtension, body: json.encode(productData));
     _isLoading = false;
 
     final Map<String, dynamic> responseData = json.decode(response.body);
@@ -70,20 +71,48 @@ class ProductsModel extends ConnectedProductsModel {
     notifyListeners();
   }
 
-  void updateProduct(Product newProduct) {
+  Future<void> updateProduct(Product newProduct) async {
+    newProduct.id = selectedProduct.id;
     newProduct.userEmail = authenticatedUser.email;
     newProduct.userId = authenticatedUser.id;
+
+    String finalUrl = _serviceUrl + '/${selectedProduct.id}' + _serviceExtension;
+    Map<String, dynamic> updateData = {
+      'title': newProduct.title,
+      'description': newProduct.description,
+      'imageUrl': newProduct.imageUrl,
+      'price': newProduct.price,
+      'userId': newProduct.userId,
+      'userEmail': newProduct.userEmail
+    };
+
+    _isLoading = true;
+    notifyListeners();
+    await http.put(finalUrl, body: json.encode(updateData));
+    _isLoading = false;
+
     products[selectedProductIndex] = newProduct;
+    notifyListeners();
   }
 
-  void removeProduct() {
+  Future<void> removeProduct() async {
+    String finalUrl = _serviceUrl + '/${selectedProduct.id}' + _serviceExtension;
+
+    _isLoading = true;
     products.removeAt(selectedProductIndex);
+    selectProduct(null);
+    
+    notifyListeners();
+    await http.delete(finalUrl);
+    _isLoading = false;
+
+    notifyListeners();
   }
 
   Future<void> fetchProducts() async {
     _isLoading = true;
     notifyListeners();
-    var response = await http.get(_serviceUrl);
+    var response = await http.get(_serviceUrl + _serviceExtension);
     _isLoading = false;
 
     List<Product> fetchedProducts = new List<Product>();

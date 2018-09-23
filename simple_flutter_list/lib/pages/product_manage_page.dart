@@ -116,12 +116,13 @@ class _ProductCreatePageState extends State<ProductManagePage> {
 
     if (selectedProductIndex == null) {
       await addProduct(_product);
-      Navigator
+    } else {
+      await updateProduct(_product);
+    }
+
+    Navigator
           .pushReplacementNamed(context, '/products')
           .then((_) => setSelectedProduct(null));
-    } else {
-      updateProduct(_product);
-    }
   }
 
   double _getPagePadding() {
