@@ -109,9 +109,13 @@ class ProductsModel extends ConnectedProductsModel {
     notifyListeners();
   }
 
-  Future<void> fetchProducts() async {
-    _isLoading = true;
-    notifyListeners();
+  Future<void> fetchProducts({bool showSpinner = true}) async {
+    
+    if (showSpinner) {
+      _isLoading = true;
+      notifyListeners();
+    }
+    
     var response = await http.get(_serviceUrl + _serviceExtension);
     _isLoading = false;
 

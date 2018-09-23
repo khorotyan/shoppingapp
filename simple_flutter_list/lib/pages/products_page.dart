@@ -49,7 +49,9 @@ class _ProductsPageState extends State<ProductsPage> {
         content = Center(child: CircularProgressIndicator());
       }
 
-      return content;
+      return RefreshIndicator(child: content, onRefresh: () async {
+        await model.fetchProducts(showSpinner: false);
+      });
     });
   }
 
