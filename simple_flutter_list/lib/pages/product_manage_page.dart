@@ -90,18 +90,22 @@ class _ProductCreatePageState extends State<ProductManagePage> {
   }
 
   Widget _buildCreateProductButton(MainModel model) {
-    return RaisedButton(
-        textColor: Colors.white,
-        child: Text('Save'),
-        onPressed: () => _onCreateProductClick(
-            model.addProduct,
-            model.updateProduct,
-            model.selectProduct,
-            model.selectedProductIndex));
+    Widget widget = model.isLoading
+        ? Center(child: CircularProgressIndicator())
+        : RaisedButton(
+            textColor: Colors.white,
+            child: Text('Save'),
+            onPressed: () => _onCreateProductClick(
+                model.addProduct,
+                model.updateProduct,
+                model.selectProduct,
+                model.selectedProductIndex));
+
+    return widget;
   }
 
   void _onCreateProductClick(Function addProduct, Function updateProduct,
-      Function setSelectedProduct, int selectedProductIndex) {
+      Function setSelectedProduct, int selectedProductIndex) async {
     _formKey.currentState.save();
 
     // Calls all the validator methods on the forms,
@@ -111,14 +115,13 @@ class _ProductCreatePageState extends State<ProductManagePage> {
     }
 
     if (selectedProductIndex == null) {
-      addProduct(_product);
+      await addProduct(_product);
+      Navigator
+          .pushReplacementNamed(context, '/products')
+          .then((_) => setSelectedProduct(null));
     } else {
       updateProduct(_product);
     }
-
-    Navigator
-        .pushReplacementNamed(context, '/products')
-        .then((_) => setSelectedProduct(null));
   }
 
   double _getPagePadding() {

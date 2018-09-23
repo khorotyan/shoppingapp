@@ -48,12 +48,12 @@ class ProductCard extends StatelessWidget {
               onPressed: () {
                 model.selectProduct(productIndex);
                 model.toggleFavoriteStatus();
+                model.selectProduct(null);
               });
         })
       ],
     );
   }
-  
 
   @override
   Widget build(BuildContext context) {

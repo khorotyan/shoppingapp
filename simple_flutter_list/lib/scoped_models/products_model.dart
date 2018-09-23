@@ -11,6 +11,7 @@ class ProductsModel extends ConnectedProductsModel {
       'https://flutter-shopping-ce8bc.firebaseio.com/products.json';
 
   bool _showFavorites = false;
+  bool _isLoading = false;
 
   List<Product> get allProducts {
     return List.from(products);
@@ -40,6 +41,10 @@ class ProductsModel extends ConnectedProductsModel {
     return _showFavorites;
   }
 
+  bool get isLoading {
+    return _isLoading;
+  }
+
   Future<void> addProduct(Product product) async {
     product.userEmail = authenticatedUser.email;
     product.userId = authenticatedUser.id;
@@ -53,7 +58,10 @@ class ProductsModel extends ConnectedProductsModel {
       'userEmail': product.userEmail
     };
 
+    _isLoading = true;
+    notifyListeners();
     var response = await http.post(_serviceUrl, body: json.encode(productData));
+    _isLoading = false;
 
     final Map<String, dynamic> responseData = json.decode(response.body);
 
@@ -73,10 +81,18 @@ class ProductsModel extends ConnectedProductsModel {
   }
 
   Future<void> fetchProducts() async {
+    _isLoading = true;
+    notifyListeners();
     var response = await http.get(_serviceUrl);
+    _isLoading = false;
 
     List<Product> fetchedProducts = new List<Product>();
     Map<String, dynamic> productsData = json.decode(response.body);
+
+    if (productsData == null) {
+      notifyListeners();
+      return;
+    }
 
     productsData.forEach((String productId, dynamic productData) {
       Product product = Product(
