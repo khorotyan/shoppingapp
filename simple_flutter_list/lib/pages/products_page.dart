@@ -4,7 +4,7 @@ import 'package:scoped_model/scoped_model.dart';
 
 import '../widgets/products/products.dart';
 import '../scoped_models/main_model.dart';
-import '../widgets/custom/httpErrorDialog.dart';
+import '../widgets/custom/http_error_dialog.dart';
 
 class ProductsPage extends StatefulWidget {
   final MainModel mainModel;
@@ -26,7 +26,7 @@ class _ProductsPageState extends State<ProductsPage> {
   }
 
   void initializeState() async {
-    bool isSuccessful = await widget.mainModel.fetchProductsAsync();
+    bool isSuccessful = await widget.mainModel.fetchProducts();
 
     if (!isSuccessful) {
       showDialog(
@@ -66,7 +66,7 @@ class _ProductsPageState extends State<ProductsPage> {
           child: content,
           onRefresh: () async {
             bool isSuccessful =
-                await model.fetchProductsAsync(showSpinner: false);
+                await model.fetchProducts(showSpinner: false);
 
             if (!isSuccessful) {
               showDialog(

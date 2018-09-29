@@ -5,7 +5,7 @@ import 'package:scoped_model/scoped_model.dart';
 import '../models/product.dart';
 import '../scoped_models/main_model.dart';
 import '../helpers/ensure_visible.dart';
-import '../widgets/custom/httpErrorDialog.dart';
+import '../widgets/custom/http_error_dialog.dart';
 
 class ProductManagePage extends StatefulWidget {
   @override
@@ -97,8 +97,8 @@ class _ProductCreatePageState extends State<ProductManagePage> {
             textColor: Colors.white,
             child: Text('Save'),
             onPressed: () => _onCreateProductClick(
-                model.addProductAsync,
-                model.updateProductAsync,
+                model.addProduct,
+                model.updateProduct,
                 model.selectProduct,
                 model.selectedProductId));
 

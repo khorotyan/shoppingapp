@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:scoped_model/scoped_model.dart';
 
 import '../scoped_models/main_model.dart';
+import '../widgets/custom/http_error_dialog.dart';
 
 class AuthPage extends StatefulWidget {
   @override
@@ -15,8 +16,14 @@ class _AuthPageState extends State<AuthPage> {
   String _email;
   String _password;
   bool _acceptTerms = false;
+  bool _isLoginMode = true;
+  static const String _loginSwitchText = 'Already have an account? LOGIN';
+  static const String _signupSwitchText = 'Don\'t have an account? SIGNUP';
+  static const String _loginButtonText = 'LOGIN';
+  static const String _signupButtonText = 'SIGNUP';
 
   final GlobalKey<FormState> _formKey = new GlobalKey<FormState>();
+  final TextEditingController _passwordController = TextEditingController();
 
   DecorationImage _buildBackgroundImage() {
     return DecorationImage(
@@ -46,6 +53,7 @@ class _AuthPageState extends State<AuthPage> {
   Widget _buildPasswordTextField() {
     return TextFormField(
       decoration: InputDecoration(labelText: 'Password', filled: true),
+      controller: _passwordController,
       obscureText: true,
       validator: (String value) {
         if (value.isEmpty || value.length < 6) {
@@ -56,6 +64,22 @@ class _AuthPageState extends State<AuthPage> {
         _password = value;
       },
     );
+  }
+
+  Widget _buildPasswordConfirmTextField() {
+    if (!_isLoginMode) {
+      return TextFormField(
+          decoration:
+              InputDecoration(labelText: 'Confirm Password', filled: true),
+          obscureText: true,
+          validator: (String value) {
+            if (_passwordController.text != value) {
+              return 'Passwords do not match';
+            }
+          });
+    }
+
+    return Container();
   }
 
   Widget _buildAcceptSwitch() {
@@ -73,27 +97,46 @@ class _AuthPageState extends State<AuthPage> {
   Widget _buildLoginButton() {
     return ScopedModelDescendant<MainModel>(
         builder: (BuildContext context, Widget child, MainModel model) {
-      return RaisedButton(
-        textColor: Colors.white,
-        child: Text('Login'),
-        onPressed: () => _onLoginClick(model.login),
-      );
+      String text = _isLoginMode == true ? _loginButtonText : _signupButtonText;
+      return model.isLoading
+          ? Center(child: CircularProgressIndicator())
+          : RaisedButton(
+              textColor: Colors.white,
+              child: Text(text),
+              onPressed: () => _onLoginClick(model.authenticate),
+            );
     });
   }
 
-  void _onLoginClick(Function login) {
+  Widget _buildModeChangerButton() {
+    String modeName =
+        _isLoginMode == true ? _signupSwitchText : _loginSwitchText;
+    return FlatButton(
+        child: Text(modeName, style: TextStyle()),
+        onPressed: () {
+          setState(() {
+            _isLoginMode = !_isLoginMode;
+          });
+        });
+  }
+
+  void _onLoginClick(Function authenticate) async {
     _formKey.currentState.save();
 
     if (!_formKey.currentState.validate() || !_acceptTerms) {
       return;
     }
-    
-    login(_email, _password);
 
-    // pushReplacement means that the current page gets completely
-    //  replaced by the new page (cannot go back to this page from it)
-    //  destroys data that existed in the previous page
-    Navigator.pushReplacementNamed(context, '/products');
+    bool isSuccessful = (await authenticate(_email, _password, _isLoginMode)).item1;
+
+    if (!isSuccessful) {
+      showDialog(
+          context: context,
+          builder: (BuildContext context) =>
+              HttpErrorDialog('Something went wrong', 'Please try again!'));
+    } else {
+      Navigator.pushReplacementNamed(context, '/products');
+    }
   }
 
   double _getAuthPageWidth() {
@@ -112,22 +155,27 @@ class _AuthPageState extends State<AuthPage> {
             decoration: BoxDecoration(image: _buildBackgroundImage()),
             padding: EdgeInsets.all(10.0),
             child: Center(
-                child: Container(
-                    width: _getAuthPageWidth(),
-                    child: Form(
-                        key: _formKey,
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.stretch,
-                          children: <Widget>[
-                            _buildEmailTextField(),
-                            SizedBox(height: 12.0),
-                            _buildPasswordTextField(),
-                            SizedBox(height: 12.0),
-                            _buildAcceptSwitch(),
-                            SizedBox(height: 12.0),
-                            _buildLoginButton()
-                          ],
-                        ))))));
+                child: SingleChildScrollView(
+                    child: Container(
+                        width: _getAuthPageWidth(),
+                        child: Form(
+                            key: _formKey,
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.stretch,
+                              children: <Widget>[
+                                _buildEmailTextField(),
+                                SizedBox(height: 12.0),
+                                _buildPasswordTextField(),
+                                SizedBox(height: 12.0),
+                                _buildPasswordConfirmTextField(),
+                                SizedBox(height: 12.0),
+                                _buildAcceptSwitch(),
+                                SizedBox(height: 12.0),
+                                _buildModeChangerButton(),
+                                SizedBox(height: 12.0),
+                                _buildLoginButton()
+                              ],
+                            )))))));
   }
 }

@@ -7,4 +7,6 @@ class ConnectedProductsModel extends Model {
   List<Product> products = new List<Product>();
   String currentProductId;
   User authenticatedUser;
+
+  bool isLoading = false;
 }

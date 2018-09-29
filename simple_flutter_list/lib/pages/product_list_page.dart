@@ -4,7 +4,7 @@ import 'package:scoped_model/scoped_model.dart';
 
 import '../scoped_models/main_model.dart';
 import './product_manage_page.dart';
-import '../widgets/custom/httpErrorDialog.dart';
+import '../widgets/custom/http_error_dialog.dart';
 
 class ProductListPage extends StatefulWidget {
   final MainModel model;
@@ -26,7 +26,7 @@ class _ProductListPageState extends State<ProductListPage> {
   }
 
   void initializeState() async {
-    bool isSuccessful = await widget.model.fetchProductsAsync();
+    bool isSuccessful = await widget.model.fetchProducts();
 
     if (!isSuccessful) {
       showDialog(
@@ -72,7 +72,7 @@ class _ProductListPageState extends State<ProductListPage> {
                 onDismissed: (DismissDirection direction) async {
                   if (direction == DismissDirection.endToStart) {
                     model.selectProduct(model.allProducts[index].id);
-                    bool isSuccessful = await model.removeProductAsync();
+                    bool isSuccessful = await model.removeProduct();
 
                     if (!isSuccessful) {
                       showDialog(

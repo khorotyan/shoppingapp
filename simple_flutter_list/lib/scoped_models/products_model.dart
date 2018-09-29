@@ -12,7 +12,6 @@ class ProductsModel extends ConnectedProductsModel {
   static const String _serviceExtension = '.json';
 
   bool _showFavorites = false;
-  bool _isLoading = false;
 
   List<Product> get allProducts {
     return List.from(products);
@@ -44,17 +43,13 @@ class ProductsModel extends ConnectedProductsModel {
     return _showFavorites;
   }
 
-  bool get isLoading {
-    return _isLoading;
-  }
-
   int get selectedProductIndex {
     return products.indexWhere((Product product) {
       return product.id == selectedProductId;
     });
   }
 
-  Future<bool> addProductAsync(Product product) async {
+  Future<bool> addProduct(Product product) async {
     product.userEmail = authenticatedUser.email;
     product.userId = authenticatedUser.id;
 
@@ -67,19 +62,19 @@ class ProductsModel extends ConnectedProductsModel {
       'userEmail': product.userEmail
     };
 
-    _isLoading = true;
+    isLoading = true;
     notifyListeners();
     http.Response response;
     try {
       response = await http.post(_serviceUrl + _serviceExtension,
           body: json.encode(productData));
     } catch (error) {
-      _isLoading = false;
+      isLoading = false;
       notifyListeners();
       return false;
     }
 
-    _isLoading = false;
+    isLoading = false;
 
     if (response.statusCode >= 400) {
       notifyListeners();
@@ -95,7 +90,7 @@ class ProductsModel extends ConnectedProductsModel {
     return true;
   }
 
-  Future<bool> updateProductAsync(Product newProduct) async {
+  Future<bool> updateProduct(Product newProduct) async {
     newProduct.id = selectedProduct.id;
     newProduct.userEmail = authenticatedUser.email;
     newProduct.userId = authenticatedUser.id;
@@ -111,18 +106,18 @@ class ProductsModel extends ConnectedProductsModel {
       'userEmail': newProduct.userEmail
     };
 
-    _isLoading = true;
+    isLoading = true;
     notifyListeners();
     http.Response response;
     try {
       response = await http.put(finalUrl, body: json.encode(updateData));
     } catch (error) {
-      _isLoading = false;
+      isLoading = false;
       notifyListeners();
       return false;
     }
 
-    _isLoading = false;
+    isLoading = false;
 
     if (response.statusCode >= 400) {
       notifyListeners();
@@ -135,11 +130,11 @@ class ProductsModel extends ConnectedProductsModel {
     return true;
   }
 
-  Future<bool> removeProductAsync() async {
+  Future<bool> removeProduct() async {
     String finalUrl =
         _serviceUrl + '/${selectedProduct.id}' + _serviceExtension;
 
-    _isLoading = true;
+    isLoading = true;
     products.removeAt(selectedProductIndex);
     selectProduct(null);
 
@@ -148,12 +143,12 @@ class ProductsModel extends ConnectedProductsModel {
     try {
       response = await http.delete(finalUrl);
     } catch (error) {
-      _isLoading = false;
+      isLoading = false;
       notifyListeners();
       return false;
     }
 
-    _isLoading = false;
+    isLoading = false;
 
     if (response.statusCode >= 400) {
       notifyListeners();
@@ -164,9 +159,9 @@ class ProductsModel extends ConnectedProductsModel {
     return true;
   }
 
-  Future<bool> fetchProductsAsync({bool showSpinner = true}) async {
+  Future<bool> fetchProducts({bool showSpinner = true}) async {
     if (showSpinner) {
-      _isLoading = true;
+      isLoading = true;
       notifyListeners();
     }
 
@@ -174,12 +169,12 @@ class ProductsModel extends ConnectedProductsModel {
     try {
       response = await http.get(_serviceUrl + _serviceExtension);
     } catch (error) {
-      _isLoading = false;
+      isLoading = false;
       notifyListeners();
       return false;
     }
 
-    _isLoading = false;
+    isLoading = false;
 
     if (response.statusCode >= 400) {
       notifyListeners();
