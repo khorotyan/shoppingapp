@@ -5,6 +5,6 @@ import '../models/user.dart';
 
 class ConnectedProductsModel extends Model {
   List<Product> products = new List<Product>();
-  int currentProductIndex;
+  String currentProductId;
   User authenticatedUser;
 }

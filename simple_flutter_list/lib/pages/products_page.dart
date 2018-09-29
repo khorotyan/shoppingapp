@@ -4,6 +4,7 @@ import 'package:scoped_model/scoped_model.dart';
 
 import '../widgets/products/products.dart';
 import '../scoped_models/main_model.dart';
+import '../widgets/custom/httpErrorDialog.dart';
 
 class ProductsPage extends StatefulWidget {
   final MainModel mainModel;
@@ -19,8 +20,20 @@ class ProductsPage extends StatefulWidget {
 class _ProductsPageState extends State<ProductsPage> {
   @override
   initState() {
-    widget.mainModel.fetchProducts();
+    initializeState();
+
     super.initState();
+  }
+
+  void initializeState() async {
+    bool isSuccessful = await widget.mainModel.fetchProductsAsync();
+
+    if (!isSuccessful) {
+      showDialog(
+          context: context,
+          builder: (BuildContext context) =>
+              HttpErrorDialog('Something went wrong', 'Please try again!'));
+    }
   }
 
   Widget _buildSideDrawer(BuildContext context) {
@@ -49,9 +62,19 @@ class _ProductsPageState extends State<ProductsPage> {
         content = Center(child: CircularProgressIndicator());
       }
 
-      return RefreshIndicator(child: content, onRefresh: () async {
-        await model.fetchProducts(showSpinner: false);
-      });
+      return RefreshIndicator(
+          child: content,
+          onRefresh: () async {
+            bool isSuccessful =
+                await model.fetchProductsAsync(showSpinner: false);
+
+            if (!isSuccessful) {
+              showDialog(
+                  context: context,
+                  builder: (BuildContext context) => HttpErrorDialog(
+                      'Something went wrong', 'Please try again!'));
+            }
+          });
     });
   }
 

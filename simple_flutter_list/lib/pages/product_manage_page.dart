@@ -5,6 +5,7 @@ import 'package:scoped_model/scoped_model.dart';
 import '../models/product.dart';
 import '../scoped_models/main_model.dart';
 import '../helpers/ensure_visible.dart';
+import '../widgets/custom/httpErrorDialog.dart';
 
 class ProductManagePage extends StatefulWidget {
   @override
@@ -96,16 +97,16 @@ class _ProductCreatePageState extends State<ProductManagePage> {
             textColor: Colors.white,
             child: Text('Save'),
             onPressed: () => _onCreateProductClick(
-                model.addProduct,
-                model.updateProduct,
+                model.addProductAsync,
+                model.updateProductAsync,
                 model.selectProduct,
-                model.selectedProductIndex));
+                model.selectedProductId));
 
     return widget;
   }
 
   void _onCreateProductClick(Function addProduct, Function updateProduct,
-      Function setSelectedProduct, int selectedProductIndex) async {
+      Function setSelectedProduct, String selectedProductId) async {
     _formKey.currentState.save();
 
     // Calls all the validator methods on the forms,
@@ -114,15 +115,23 @@ class _ProductCreatePageState extends State<ProductManagePage> {
       return;
     }
 
-    if (selectedProductIndex == null) {
-      await addProduct(_product);
+    bool isSuccessful;
+    if (selectedProductId == null) {
+      isSuccessful = await addProduct(_product);
     } else {
-      await updateProduct(_product);
+      isSuccessful = await updateProduct(_product);
     }
 
-    Navigator
+    if (!isSuccessful) {
+      showDialog(
+          context: context,
+          builder: (BuildContext context) =>
+              HttpErrorDialog('Something went wrong', 'Please try again!'));
+    } else {
+      Navigator
           .pushReplacementNamed(context, '/products')
           .then((_) => setSelectedProduct(null));
+    }
   }
 
   double _getPagePadding() {
@@ -165,7 +174,7 @@ class _ProductCreatePageState extends State<ProductManagePage> {
                         _buildCreateProductButton(model)
                       ]))));
 
-      return model.selectedProductIndex == null
+      return model.selectedProductId == null
           ? pageContent
           : Scaffold(
               appBar: AppBar(title: Text('Edit Product')), body: pageContent);

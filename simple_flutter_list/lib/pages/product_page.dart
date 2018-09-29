@@ -8,10 +8,6 @@ import '../scoped_models/main_model.dart';
 import '../widgets/ui_elements/title_default.dart';
 
 class ProductPage extends StatelessWidget {
-  final int productIndex;
-
-  ProductPage(this.productIndex);
-
   Widget _buildAddressPriceRow(double price) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
@@ -40,7 +36,7 @@ class ProductPage extends StatelessWidget {
       // Some other functionality can be executed here too
     }, child: ScopedModelDescendant(
             builder: (BuildContext context, Widget child, MainModel model) {
-      final Product product = model.allProducts[productIndex];
+      final Product product = model.selectedProduct;
 
       return Scaffold(
           appBar: AppBar(title: Text(product.title)),
@@ -50,7 +46,9 @@ class ProductPage extends StatelessWidget {
                   crossAxisAlignment:
                       CrossAxisAlignment.center, // Horizontal alignment
                   children: <Widget>[
-                    Image.network(product.imageUrl),
+                    FadeInImage(
+                        image: NetworkImage(product.imageUrl),
+                        placeholder: AssetImage('images/img512_512.png')),
                     SizedBox(height: 10.0),
                     TitleDefault(product.title),
                     SizedBox(height: 10.0),

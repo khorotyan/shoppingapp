@@ -28,31 +28,31 @@ class ProductCard extends StatelessWidget {
   }
 
   Widget _buildActionButtons(BuildContext context) {
-    return ButtonBar(
-      alignment: MainAxisAlignment.center,
-      children: <Widget>[
-        IconButton(
-            icon: Icon(Icons.info),
-            color: Theme.of(context).accentColor,
-            onPressed: () => Navigator.pushNamed<bool>(
-                context, '/product/' + productIndex.toString())),
-        ScopedModelDescendant<MainModel>(
-            builder: (BuildContext context, Widget child, MainModel model) {
-          IconData favoriteIcon = model.allProducts[productIndex].isFavorite
-              ? Icons.favorite
-              : Icons.favorite_border;
+    return ScopedModelDescendant<MainModel>(
+        builder: (BuildContext context, Widget child, MainModel model) {
+      IconData favoriteIcon = model.allProducts[productIndex].isFavorite
+          ? Icons.favorite
+          : Icons.favorite_border;
 
-          return IconButton(
+      return ButtonBar(
+        alignment: MainAxisAlignment.center,
+        children: <Widget>[
+          IconButton(
+              icon: Icon(Icons.info),
+              color: Theme.of(context).accentColor,
+              onPressed: () => Navigator.pushNamed<bool>(
+                  context, '/product/' + model.allProducts[productIndex].id)),
+          IconButton(
               icon: Icon(favoriteIcon),
               color: Theme.of(context).accentColor,
               onPressed: () {
-                model.selectProduct(productIndex);
+                model.selectProduct(model.allProducts[productIndex].id);
                 model.toggleFavoriteStatus();
                 model.selectProduct(null);
-              });
-        })
-      ],
-    );
+              })
+        ],
+      );
+    });
   }
 
   @override

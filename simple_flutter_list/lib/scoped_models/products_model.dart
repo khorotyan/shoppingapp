@@ -26,16 +26,18 @@ class ProductsModel extends ConnectedProductsModel {
     return List.from(products);
   }
 
-  int get selectedProductIndex {
-    return currentProductIndex;
+  String get selectedProductId {
+    return currentProductId;
   }
 
   Product get selectedProduct {
-    if (selectedProductIndex == null) {
+    if (selectedProductId == null) {
       return null;
     }
 
-    return products[selectedProductIndex];
+    return products.firstWhere((Product product) {
+      return product.id == selectedProductId;
+    });
   }
 
   bool get showFavorites {
@@ -46,7 +48,13 @@ class ProductsModel extends ConnectedProductsModel {
     return _isLoading;
   }
 
-  Future<void> addProduct(Product product) async {
+  int get selectedProductIndex {
+    return products.indexWhere((Product product) {
+      return product.id == selectedProductId;
+    });
+  }
+
+  Future<bool> addProductAsync(Product product) async {
     product.userEmail = authenticatedUser.email;
     product.userId = authenticatedUser.id;
 
@@ -61,22 +69,39 @@ class ProductsModel extends ConnectedProductsModel {
 
     _isLoading = true;
     notifyListeners();
-    var response = await http.post(_serviceUrl + _serviceExtension, body: json.encode(productData));
+    http.Response response;
+    try {
+      response = await http.post(_serviceUrl + _serviceExtension,
+          body: json.encode(productData));
+    } catch (error) {
+      _isLoading = false;
+      notifyListeners();
+      return false;
+    }
+
     _isLoading = false;
+
+    if (response.statusCode >= 400) {
+      notifyListeners();
+      return false;
+    }
 
     final Map<String, dynamic> responseData = json.decode(response.body);
 
     product.id = responseData['name'];
     products.add(product);
     notifyListeners();
+
+    return true;
   }
 
-  Future<void> updateProduct(Product newProduct) async {
+  Future<bool> updateProductAsync(Product newProduct) async {
     newProduct.id = selectedProduct.id;
     newProduct.userEmail = authenticatedUser.email;
     newProduct.userId = authenticatedUser.id;
 
-    String finalUrl = _serviceUrl + '/${selectedProduct.id}' + _serviceExtension;
+    String finalUrl =
+        _serviceUrl + '/${selectedProduct.id}' + _serviceExtension;
     Map<String, dynamic> updateData = {
       'title': newProduct.title,
       'description': newProduct.description,
@@ -88,43 +113,85 @@ class ProductsModel extends ConnectedProductsModel {
 
     _isLoading = true;
     notifyListeners();
-    await http.put(finalUrl, body: json.encode(updateData));
+    http.Response response;
+    try {
+      response = await http.put(finalUrl, body: json.encode(updateData));
+    } catch (error) {
+      _isLoading = false;
+      notifyListeners();
+      return false;
+    }
+
     _isLoading = false;
+
+    if (response.statusCode >= 400) {
+      notifyListeners();
+      return false;
+    }
 
     products[selectedProductIndex] = newProduct;
     notifyListeners();
+
+    return true;
   }
 
-  Future<void> removeProduct() async {
-    String finalUrl = _serviceUrl + '/${selectedProduct.id}' + _serviceExtension;
+  Future<bool> removeProductAsync() async {
+    String finalUrl =
+        _serviceUrl + '/${selectedProduct.id}' + _serviceExtension;
 
     _isLoading = true;
     products.removeAt(selectedProductIndex);
     selectProduct(null);
-    
+
     notifyListeners();
-    await http.delete(finalUrl);
+    http.Response response;
+    try {
+      response = await http.delete(finalUrl);
+    } catch (error) {
+      _isLoading = false;
+      notifyListeners();
+      return false;
+    }
+
     _isLoading = false;
 
+    if (response.statusCode >= 400) {
+      notifyListeners();
+      return false;
+    }
+
     notifyListeners();
+    return true;
   }
 
-  Future<void> fetchProducts({bool showSpinner = true}) async {
-    
+  Future<bool> fetchProductsAsync({bool showSpinner = true}) async {
     if (showSpinner) {
       _isLoading = true;
       notifyListeners();
     }
-    
-    var response = await http.get(_serviceUrl + _serviceExtension);
+
+    http.Response response;
+    try {
+      response = await http.get(_serviceUrl + _serviceExtension);
+    } catch (error) {
+      _isLoading = false;
+      notifyListeners();
+      return false;
+    }
+
     _isLoading = false;
+
+    if (response.statusCode >= 400) {
+      notifyListeners();
+      return false;
+    }
 
     List<Product> fetchedProducts = new List<Product>();
     Map<String, dynamic> productsData = json.decode(response.body);
 
     if (productsData == null) {
       notifyListeners();
-      return;
+      return true;
     }
 
     productsData.forEach((String productId, dynamic productData) {
@@ -142,6 +209,8 @@ class ProductsModel extends ConnectedProductsModel {
 
     products = fetchedProducts;
     notifyListeners();
+
+    return true;
   }
 
   void toggleFavoriteStatus() {
@@ -149,10 +218,10 @@ class ProductsModel extends ConnectedProductsModel {
     notifyListeners();
   }
 
-  void selectProduct(int index) {
-    currentProductIndex = index;
+  void selectProduct(String productId) {
+    currentProductId = productId;
 
-    if (index != null) {
+    if (productId != null) {
       notifyListeners();
     }
   }

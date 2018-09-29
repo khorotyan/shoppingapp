@@ -4,6 +4,7 @@ import 'package:scoped_model/scoped_model.dart';
 
 import '../scoped_models/main_model.dart';
 import './product_manage_page.dart';
+import '../widgets/custom/httpErrorDialog.dart';
 
 class ProductListPage extends StatefulWidget {
   final MainModel model;
@@ -11,23 +12,35 @@ class ProductListPage extends StatefulWidget {
   ProductListPage(this.model);
 
   @override
-    State<StatefulWidget> createState() {
-      return _ProductListPageState();
-    }
+  State<StatefulWidget> createState() {
+    return _ProductListPageState();
+  }
 }
 
 class _ProductListPageState extends State<ProductListPage> {
   @override
   initState() {
-    widget.model.fetchProducts();
+    initializeState();
+
     super.initState();
+  }
+
+  void initializeState() async {
+    bool isSuccessful = await widget.model.fetchProductsAsync();
+
+    if (!isSuccessful) {
+      showDialog(
+          context: context,
+          builder: (BuildContext context) =>
+              HttpErrorDialog('Something went wrong', 'Please try again!'));
+    }
   }
 
   Widget _buildEditButton(BuildContext context, int index, MainModel model) {
     return IconButton(
       icon: Icon(Icons.edit),
       onPressed: () {
-        model.selectProduct(index);
+        model.selectProduct(model.allProducts[index].id);
         Navigator
             .of(context)
             .push(MaterialPageRoute(builder: (BuildContext context) {
@@ -56,10 +69,17 @@ class _ProductListPageState extends State<ProductListPage> {
       return ListView.builder(
           itemBuilder: (BuildContext context, int index) {
             return Dismissible(
-                onDismissed: (DismissDirection direction) {
+                onDismissed: (DismissDirection direction) async {
                   if (direction == DismissDirection.endToStart) {
-                    model.selectProduct(index);
-                    model.removeProduct();
+                    model.selectProduct(model.allProducts[index].id);
+                    bool isSuccessful = await model.removeProductAsync();
+
+                    if (!isSuccessful) {
+                      showDialog(
+                          context: context,
+                          builder: (BuildContext context) => HttpErrorDialog(
+                              'Something went wrong', 'Please try again!'));
+                    }
                   }
                 },
                 background: Container(
