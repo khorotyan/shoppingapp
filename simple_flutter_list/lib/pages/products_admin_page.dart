@@ -17,9 +17,17 @@ class ProductsAdminPage extends StatelessWidget {
         leading: Icon(Icons.shop),
         title: Text('All Products'),
         onTap: () {
-          Navigator.pushReplacementNamed(context, '/products');
+          Navigator.pushReplacementNamed(context, '/');
         },
-      )
+      ),
+      Divider(),
+      ListTile(
+          leading: Icon(Icons.exit_to_app),
+          title: Text('Logout'),
+          onTap: () {
+            model.logout();
+            Navigator.of(context).pushReplacementNamed('/');
+          })
     ]));
   }
 
@@ -38,7 +46,9 @@ class ProductsAdminPage extends StatelessWidget {
                 Tab(icon: Icon(Icons.list), text: 'My Products')
               ]),
             ),
-            body: TabBarView(
-                children: <Widget>[ProductManagePage(), ProductListPage(model)])));
+            body: TabBarView(children: <Widget>[
+              ProductManagePage(),
+              ProductListPage(model)
+            ])));
   }
 }

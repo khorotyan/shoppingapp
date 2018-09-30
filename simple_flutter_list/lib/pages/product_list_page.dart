@@ -5,6 +5,7 @@ import 'package:scoped_model/scoped_model.dart';
 import '../scoped_models/main_model.dart';
 import './product_manage_page.dart';
 import '../widgets/custom/http_error_dialog.dart';
+import './auth_page.dart';
 
 class ProductListPage extends StatefulWidget {
   final MainModel model;
@@ -44,7 +45,9 @@ class _ProductListPageState extends State<ProductListPage> {
         Navigator
             .of(context)
             .push(MaterialPageRoute(builder: (BuildContext context) {
-          return ProductManagePage();
+          return model.authenticatedUser == null
+              ? AuthPage()
+              : ProductManagePage();
         })).then((_) {
           model.selectProduct(null);
         });

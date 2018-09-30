@@ -15,7 +15,7 @@ class ProductManagePage extends StatefulWidget {
 }
 
 class _ProductCreatePageState extends State<ProductManagePage> {
-  Product _product = new Product(
+  Product _product = Product(
       '',
       '',
       '',
@@ -129,7 +129,7 @@ class _ProductCreatePageState extends State<ProductManagePage> {
               HttpErrorDialog('Something went wrong', 'Please try again!'));
     } else {
       Navigator
-          .pushReplacementNamed(context, '/products')
+          .pushReplacementNamed(context, '/')
           .then((_) => setSelectedProduct(null));
     }
   }

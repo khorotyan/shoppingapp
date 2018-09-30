@@ -28,11 +28,16 @@ class SimpleApp extends StatefulWidget {
 
 class _SimpleAppState extends State<SimpleApp> {
   final MainModel _mainModel = MainModel();
+  bool _isAuthenticated = false;
 
   @override
   void initState() {
     _mainModel.autoLogin();
-
+    _mainModel.userSubject.listen((bool isAuthenticated) {
+      setState(() {
+        _isAuthenticated = isAuthenticated;
+      });
+    });
     super.initState();
   }
 
@@ -48,15 +53,18 @@ class _SimpleAppState extends State<SimpleApp> {
                 buttonColor: Colors.deepOrangeAccent),
             routes: {
               '/': (BuildContext context) =>
-                  _mainModel.authenticatedUser == null
-                      ? AuthPage()
-                      : ProductsPage(_mainModel),
-              '/products': (BuildContext context) => ProductsPage(_mainModel),
-              '/admin': (BuildContext context) => ProductsAdminPage(_mainModel)
+                  !_isAuthenticated ? AuthPage() : ProductsPage(_mainModel),
+              '/admin': (BuildContext context) =>
+                  !_isAuthenticated ? AuthPage() : ProductsAdminPage(_mainModel)
             },
 
             // Executed when we navigate to a named route
             onGenerateRoute: (RouteSettings settings) {
+              if (!_isAuthenticated) {
+                return MaterialPageRoute<bool>(
+                    builder: (BuildContext context) => AuthPage());
+              }
+
               // We want something like this: '/product/:id',
               //  splitting will get us: '', 'product', and ':id' - index of the product
               final List<String> pathElements = settings.name.split('/');
@@ -70,7 +78,8 @@ class _SimpleAppState extends State<SimpleApp> {
                 _mainModel.selectProduct(productId);
 
                 return MaterialPageRoute<bool>(
-                    builder: (BuildContext context) => ProductPage());
+                    builder: (BuildContext context) =>
+                        !_isAuthenticated ? AuthPage() : ProductPage());
               }
 
               return null;
@@ -80,7 +89,9 @@ class _SimpleAppState extends State<SimpleApp> {
               return MaterialPageRoute(
                   // When we want to go to a page that does not exist, then at least go to
                   //  this page - the home page
-                  builder: (BuildContext context) => ProductsPage(_mainModel));
+                  builder: (BuildContext context) => !_isAuthenticated
+                      ? AuthPage()
+                      : ProductsPage(_mainModel));
             }));
   }
 }

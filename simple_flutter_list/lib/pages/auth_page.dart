@@ -127,15 +127,14 @@ class _AuthPageState extends State<AuthPage> {
       return;
     }
 
-    bool isSuccessful = (await authenticate(_email, _password, _isLoginMode)).item1;
+    bool isSuccessful =
+        (await authenticate(_email, _password, _isLoginMode)).item1;
 
     if (!isSuccessful) {
       showDialog(
           context: context,
           builder: (BuildContext context) =>
               HttpErrorDialog('Something went wrong', 'Please try again!'));
-    } else {
-      Navigator.pushReplacementNamed(context, '/products');
     }
   }
 

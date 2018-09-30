@@ -47,6 +47,7 @@ class _ProductsPageState extends State<ProductsPage> {
           onTap: () {
             Navigator.pushReplacementNamed(context, '/admin');
           }),
+      Divider(),
       ListTile(
           leading: Icon(Icons.exit_to_app),
           title: Text('Logout'),
