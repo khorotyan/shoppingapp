@@ -164,7 +164,8 @@ class ProductsModel extends ConnectedProductsModel {
     return true;
   }
 
-  Future<bool> fetchProducts({bool showSpinner = true}) async {
+  Future<bool> fetchProducts(
+      {bool showSpinner = true, onlyUserProducts = false}) async {
     if (showSpinner) {
       isLoading = true;
       notifyListeners();
@@ -197,6 +198,14 @@ class ProductsModel extends ConnectedProductsModel {
     }
 
     productsData.forEach((String productId, dynamic productData) {
+      var likedUsers = productData['likedUsers'];
+      bool isFavorite = false;
+
+      if (likedUsers != null) {
+        isFavorite = (likedUsers as Map<String, dynamic>)
+            .containsKey(authenticatedUser.id);
+      }
+
       Product product = Product(
           productId,
           productData['title'],
@@ -204,20 +213,56 @@ class ProductsModel extends ConnectedProductsModel {
           productData['imageUrl'],
           productData['price'],
           productData['userId'],
-          productData['userEmail']);
+          productData['userEmail'],
+          isFavorite);
 
       fetchedProducts.add(product);
     });
 
-    products = fetchedProducts;
+    if (onlyUserProducts) {
+      products = fetchedProducts.where((Product product) {
+        return product.userId == authenticatedUser.id;
+      }).toList();
+    } else {
+      products = fetchedProducts;
+    }
+
     notifyListeners();
 
     return true;
   }
 
-  void toggleFavoriteStatus() {
-    products[selectedProductIndex].isFavorite = !selectedProduct.isFavorite;
+  Future<bool> toggleFavoriteStatus() async {
+    bool isFavorite = !selectedProduct.isFavorite;
+    products[selectedProductIndex].isFavorite = isFavorite;
     notifyListeners();
+
+    String finalUrl = _serviceUrl +
+        '/${selectedProduct.id}/likedUsers/${authenticatedUser.id}' +
+        _serviceExtension +
+        _authParam;
+
+    http.Response response;
+
+    try {
+      if (isFavorite) {
+        response = await http.put(finalUrl, body: json.encode(true));
+      } else {
+        response = await http.delete(finalUrl);
+      }
+    } catch (error) {
+      products[selectedProductIndex].isFavorite = !isFavorite;
+      notifyListeners();
+      return false;
+    }
+
+    if (response.statusCode >= 400) {
+      products[selectedProductIndex].isFavorite = !isFavorite;
+      notifyListeners();
+      return false;
+    }
+
+    return true;
   }
 
   void selectProduct(String productId) {

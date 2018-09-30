@@ -122,6 +122,7 @@ class UserModel extends ConnectedProductsModel {
 
   void logout() async {
     authenticatedUser = null;
+    products = [];
     _authTimer.cancel();
     _userSubject.add(false); // Emit an event when we logout
 
@@ -132,6 +133,6 @@ class UserModel extends ConnectedProductsModel {
   }
 
   void setAuthTimeout(int time) {
-    _authTimer = Timer(Duration(milliseconds: time * 5), logout);
+    _authTimer = Timer(Duration(seconds: time), logout);
   }
 }

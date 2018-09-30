@@ -27,7 +27,7 @@ class _ProductListPageState extends State<ProductListPage> {
   }
 
   void initializeState() async {
-    bool isSuccessful = await widget.model.fetchProducts();
+    bool isSuccessful = await widget.model.fetchProducts(onlyUserProducts: true);
 
     if (!isSuccessful) {
       showDialog(

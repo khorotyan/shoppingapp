@@ -7,6 +7,7 @@ import '../../scoped_models/main_model.dart';
 import './price_tag.dart';
 import '../ui_elements/title_default.dart';
 import '../products/address_tag.dart';
+import '../custom/http_error_dialog.dart';
 
 class ProductCard extends StatelessWidget {
   final Product product;
@@ -30,29 +31,47 @@ class ProductCard extends StatelessWidget {
   Widget _buildActionButtons(BuildContext context) {
     return ScopedModelDescendant<MainModel>(
         builder: (BuildContext context, Widget child, MainModel model) {
-      IconData favoriteIcon = model.allProducts[productIndex].isFavorite
+      IconData favoriteIcon = model.displayedProducts[productIndex].isFavorite
           ? Icons.favorite
           : Icons.favorite_border;
 
       return ButtonBar(
         alignment: MainAxisAlignment.center,
         children: <Widget>[
-          IconButton(
-              icon: Icon(Icons.info),
-              color: Theme.of(context).accentColor,
-              onPressed: () => Navigator.pushNamed<bool>(
-                  context, '/product/' + model.allProducts[productIndex].id)),
-          IconButton(
-              icon: Icon(favoriteIcon),
-              color: Theme.of(context).accentColor,
-              onPressed: () {
-                model.selectProduct(model.allProducts[productIndex].id);
-                model.toggleFavoriteStatus();
-                model.selectProduct(null);
-              })
+          _buildDescriptionButton(context, model),
+          _buildHeartButton(context, model, favoriteIcon)
         ],
       );
     });
+  }
+
+  Widget _buildDescriptionButton(BuildContext context, MainModel model) {
+    return IconButton(
+        icon: Icon(Icons.info),
+        color: Theme.of(context).accentColor,
+        onPressed: () => Navigator.pushNamed<bool>(
+            context, '/product/' + model.displayedProducts[productIndex].id));
+  }
+
+  Widget _buildHeartButton(
+      BuildContext context, MainModel model, IconData favoriteIcon) {
+    return IconButton(
+        icon: Icon(favoriteIcon),
+        color: Theme.of(context).accentColor,
+        onPressed: () async {
+          model.selectProduct(model.displayedProducts[productIndex].id);
+
+          bool isSuccessful = await model.toggleFavoriteStatus();
+
+          if (!isSuccessful) {
+            showDialog(
+                context: context,
+                builder: (BuildContext context) => HttpErrorDialog(
+                    'Something went wrong', 'Please try again!'));
+          }
+
+          model.selectProduct(null);
+        });
   }
 
   @override
