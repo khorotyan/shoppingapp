@@ -42,12 +42,18 @@ class _ProductsPageState extends State<ProductsPage> {
       // automaticallyImplyLeading disables the drawer icon
       AppBar(automaticallyImplyLeading: false, title: Text('Choose')),
       ListTile(
-        leading: Icon(Icons.edit),
-        title: Text('Manage Products'),
-        onTap: () {
-          Navigator.pushReplacementNamed(context, '/admin');
-        },
-      )
+          leading: Icon(Icons.edit),
+          title: Text('Manage Products'),
+          onTap: () {
+            Navigator.pushReplacementNamed(context, '/admin');
+          }),
+      ListTile(
+          leading: Icon(Icons.exit_to_app),
+          title: Text('Logout'),
+          onTap: () {
+            widget.mainModel.logout();
+            Navigator.of(context).pushReplacementNamed('/');
+          })
     ]));
   }
 
@@ -65,8 +71,7 @@ class _ProductsPageState extends State<ProductsPage> {
       return RefreshIndicator(
           child: content,
           onRefresh: () async {
-            bool isSuccessful =
-                await model.fetchProducts(showSpinner: false);
+            bool isSuccessful = await model.fetchProducts(showSpinner: false);
 
             if (!isSuccessful) {
               showDialog(

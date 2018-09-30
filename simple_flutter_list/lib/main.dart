@@ -47,12 +47,10 @@ class _SimpleAppState extends State<SimpleApp> {
                 accentColor: Colors.deepOrangeAccent,
                 buttonColor: Colors.deepOrangeAccent),
             routes: {
-              '/': (BuildContext context) => ScopedModelDescendant(builder:
-                      (BuildContext context, Widget child, MainModel model) {
-                    return model.authenticatedUser == null
-                        ? AuthPage()
-                        : ProductsPage(_mainModel);
-                  }),
+              '/': (BuildContext context) =>
+                  _mainModel.authenticatedUser == null
+                      ? AuthPage()
+                      : ProductsPage(_mainModel),
               '/products': (BuildContext context) => ProductsPage(_mainModel),
               '/admin': (BuildContext context) => ProductsAdminPage(_mainModel)
             },

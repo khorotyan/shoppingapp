@@ -87,4 +87,13 @@ class UserModel extends ConnectedProductsModel {
       notifyListeners();
     }
   }
+
+  void logout() async {
+    authenticatedUser = null;
+    
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.remove('userId');
+    prefs.remove('userEmail');
+    prefs.remove('accessToken');
+  }
 }
