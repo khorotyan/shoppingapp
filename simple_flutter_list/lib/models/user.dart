@@ -1,7 +1,7 @@
 class User {
   String id;
   String email;
-  String password;
+  String accessToken;
 
-  User({this.id, this.email, this.password});
+  User({this.id, this.email, this.accessToken});
 }

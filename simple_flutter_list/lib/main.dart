@@ -27,11 +27,19 @@ class SimpleApp extends StatefulWidget {
 }
 
 class _SimpleAppState extends State<SimpleApp> {
+  final MainModel _mainModel = MainModel();
+
+  @override
+  void initState() {
+    _mainModel.autoLogin();
+
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
-    final MainModel mainModel = MainModel();
     return ScopedModel<MainModel>(
-        model: mainModel,
+        model: _mainModel,
         child: MaterialApp(
             theme: ThemeData(
                 brightness: Brightness.light,
@@ -39,9 +47,14 @@ class _SimpleAppState extends State<SimpleApp> {
                 accentColor: Colors.deepOrangeAccent,
                 buttonColor: Colors.deepOrangeAccent),
             routes: {
-              '/': (BuildContext context) => AuthPage(),
-              '/products': (BuildContext context) => ProductsPage(mainModel),
-              '/admin': (BuildContext context) => ProductsAdminPage(mainModel)
+              '/': (BuildContext context) => ScopedModelDescendant(builder:
+                      (BuildContext context, Widget child, MainModel model) {
+                    return model.authenticatedUser == null
+                        ? AuthPage()
+                        : ProductsPage(_mainModel);
+                  }),
+              '/products': (BuildContext context) => ProductsPage(_mainModel),
+              '/admin': (BuildContext context) => ProductsAdminPage(_mainModel)
             },
 
             // Executed when we navigate to a named route
@@ -56,7 +69,7 @@ class _SimpleAppState extends State<SimpleApp> {
 
               if (pathElements[1] == 'product') {
                 final String productId = pathElements[2];
-                mainModel.selectProduct(productId);
+                _mainModel.selectProduct(productId);
 
                 return MaterialPageRoute<bool>(
                     builder: (BuildContext context) => ProductPage());
@@ -69,7 +82,7 @@ class _SimpleAppState extends State<SimpleApp> {
               return MaterialPageRoute(
                   // When we want to go to a page that does not exist, then at least go to
                   //  this page - the home page
-                  builder: (BuildContext context) => ProductsPage(mainModel));
+                  builder: (BuildContext context) => ProductsPage(_mainModel));
             }));
   }
 }

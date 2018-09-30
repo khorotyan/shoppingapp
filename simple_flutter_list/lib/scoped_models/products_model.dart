@@ -13,6 +13,10 @@ class ProductsModel extends ConnectedProductsModel {
 
   bool _showFavorites = false;
 
+  String get _authParam {
+    return '?auth=${authenticatedUser.accessToken}';
+  }
+
   List<Product> get allProducts {
     return List.from(products);
   }
@@ -62,12 +66,13 @@ class ProductsModel extends ConnectedProductsModel {
       'userEmail': product.userEmail
     };
 
+    String finalUrl = _serviceUrl + _serviceExtension + _authParam;
+
     isLoading = true;
     notifyListeners();
     http.Response response;
     try {
-      response = await http.post(_serviceUrl + _serviceExtension,
-          body: json.encode(productData));
+      response = await http.post(finalUrl, body: json.encode(productData));
     } catch (error) {
       isLoading = false;
       notifyListeners();
@@ -96,7 +101,7 @@ class ProductsModel extends ConnectedProductsModel {
     newProduct.userId = authenticatedUser.id;
 
     String finalUrl =
-        _serviceUrl + '/${selectedProduct.id}' + _serviceExtension;
+        _serviceUrl + '/${selectedProduct.id}' + _serviceExtension + _authParam;
     Map<String, dynamic> updateData = {
       'title': newProduct.title,
       'description': newProduct.description,
@@ -132,7 +137,7 @@ class ProductsModel extends ConnectedProductsModel {
 
   Future<bool> removeProduct() async {
     String finalUrl =
-        _serviceUrl + '/${selectedProduct.id}' + _serviceExtension;
+        _serviceUrl + '/${selectedProduct.id}' + _serviceExtension + _authParam;
 
     isLoading = true;
     products.removeAt(selectedProductIndex);
@@ -165,9 +170,11 @@ class ProductsModel extends ConnectedProductsModel {
       notifyListeners();
     }
 
+    String finalUrl = _serviceUrl + _serviceExtension + _authParam;
+
     http.Response response;
     try {
-      response = await http.get(_serviceUrl + _serviceExtension);
+      response = await http.get(finalUrl);
     } catch (error) {
       isLoading = false;
       notifyListeners();
