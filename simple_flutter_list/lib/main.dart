@@ -82,7 +82,7 @@ class _SimpleAppState extends State<SimpleApp> {
 
                 return MaterialPageRoute<bool>(
                     builder: (BuildContext context) =>
-                        !_isAuthenticated ? AuthPage() : ProductPage());
+                        !_isAuthenticated ? AuthPage() : ProductPage(_mainModel));
               }
 
               return null;

@@ -63,7 +63,12 @@ class ProductsModel extends ConnectedProductsModel {
       'imageUrl': product.imageUrl,
       'price': product.price,
       'userId': product.userId,
-      'userEmail': product.userEmail
+      'userEmail': product.userEmail,
+      'location': {
+        'latitude': product.location.latitude,
+        'longitude': product.location.longitude,
+        'address': product.location.address
+      }
     };
 
     String finalUrl = _serviceUrl + _serviceExtension + _authParam;
@@ -268,9 +273,11 @@ class ProductsModel extends ConnectedProductsModel {
   void selectProduct(String productId) {
     currentProductId = productId;
 
-    if (productId != null) {
-      notifyListeners();
+    if (productId == null) {
+      return;
     }
+
+    notifyListeners();
   }
 
   void toggleDisplayMode() {

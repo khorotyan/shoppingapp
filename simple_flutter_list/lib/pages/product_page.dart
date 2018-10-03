@@ -8,6 +8,10 @@ import '../scoped_models/main_model.dart';
 import '../widgets/ui_elements/title_default.dart';
 
 class ProductPage extends StatelessWidget {
+  final MainModel mainModel;
+
+  ProductPage(this.mainModel);
+
   Widget _buildAddressPriceRow(double price) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
@@ -29,11 +33,11 @@ class ProductPage extends StatelessWidget {
         // WillPopScope used for getting back from this page
         // onWillPop executed when clicking the back button
         onWillPop: () {
+      mainModel.selectProduct(null);
       // pass false as a parameter, meaning that we do not want to delete the product
       Navigator.pop(context, false);
       // Allows the user to leave the page, pass true if leaving without the pop method
       return Future.value(false);
-      // Some other functionality can be executed here too
     }, child: ScopedModelDescendant(
             builder: (BuildContext context, Widget child, MainModel model) {
       final Product product = model.selectedProduct;

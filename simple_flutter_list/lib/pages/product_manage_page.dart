@@ -7,6 +7,7 @@ import '../scoped_models/main_model.dart';
 import '../helpers/ensure_visible.dart';
 import '../widgets/custom/http_error_dialog.dart';
 import '../widgets/custom/location.dart';
+import '../models/location_data.dart';
 
 class ProductManagePage extends StatefulWidget {
   @override
@@ -91,6 +92,10 @@ class _ProductCreatePageState extends State<ProductManagePage> {
             }));
   }
 
+  void _setLocation(LocationData locationData) {
+    _product.location = locationData;
+  }
+
   Widget _buildCreateProductButton(MainModel model) {
     Widget widget = model.isLoading
         ? Center(child: CircularProgressIndicator())
@@ -172,7 +177,7 @@ class _ProductCreatePageState extends State<ProductManagePage> {
                         _buildDescriptionTextField(model.selectedProduct),
                         _buildPriceTextField(model.selectedProduct),
                         SizedBox(height: 10.0),
-                        LocationInput(),
+                        LocationInput(_setLocation),
                         SizedBox(height: 10.0),
                         _buildCreateProductButton(model)
                       ]))));
