@@ -177,7 +177,7 @@ class _ProductCreatePageState extends State<ProductManagePage> {
                         _buildDescriptionTextField(model.selectedProduct),
                         _buildPriceTextField(model.selectedProduct),
                         SizedBox(height: 10.0),
-                        LocationInput(_setLocation),
+                        LocationInput(_setLocation, model.selectedProduct),
                         SizedBox(height: 10.0),
                         _buildCreateProductButton(model)
                       ]))));

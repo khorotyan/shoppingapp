@@ -6,11 +6,13 @@ import 'package:http/http.dart' as http;
 
 import '../../helpers/ensure_visible.dart';
 import '../../models/location_data.dart';
+import '../../models/product.dart';
 
 class LocationInput extends StatefulWidget {
   final Function setLocation;
+  final Product product;
 
-  LocationInput(this.setLocation);
+  LocationInput(this.setLocation, this.product);
 
   @override
   State<StatefulWidget> createState() {
@@ -29,6 +31,11 @@ class _LocationInputState extends State<LocationInput> {
   @override
   void initState() {
     _addressInputNode.addListener(_updateLocation);
+
+    // If we are in the edit mode, retrieve the product address
+    if (widget.product != null) {
+      getStaticMap(widget.product.location.address);
+    }
     super.initState();
   }
 
@@ -47,25 +54,30 @@ class _LocationInputState extends State<LocationInput> {
       return;
     }
 
-    Uri uri = Uri.https('maps.googleapis.com', '/maps/api/geocode/json',
-        {'address': locationName, 'key': _googleApiKey});
-    http.Response response;
+    // Retrieve coordinates from address
+    if (widget.product == null) {
+      Uri uri = Uri.https('maps.googleapis.com', '/maps/api/geocode/json',
+          {'address': locationName, 'key': _googleApiKey});
+      http.Response response;
 
-    try {
-      response = await http.get(uri);
-    } catch (error) {
-      return;
+      try {
+        response = await http.get(uri);
+      } catch (error) {
+        return;
+      }
+
+      if (response.statusCode >= 400) {
+        return;
+      }
+
+      Map<String, dynamic> decodedResponse = json.decode(response.body);
+      var formattedAddress = decodedResponse['results'][0]['formatted_address'];
+      var coordinates = decodedResponse['results'][0]['geometry']['location'];
+      _locationData = LocationData(
+          coordinates['lat'], coordinates['lng'], formattedAddress);
+    } else {
+      _locationData = widget.product.location;
     }
-
-    if (response.statusCode >= 400) {
-      return;
-    }
-
-    Map<String, dynamic> decodedResponse = json.decode(response.body);
-    var formattedAddress = decodedResponse['results'][0]['formatted_address'];
-    var coordinates = decodedResponse['results'][0]['geometry']['location'];
-    _locationData =
-        LocationData(coordinates['lat'], coordinates['lng'], formattedAddress);
 
     StaticMapProvider staticMapProvider = StaticMapProvider(_googleApiKey);
 

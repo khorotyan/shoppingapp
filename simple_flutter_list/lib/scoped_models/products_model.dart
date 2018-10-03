@@ -5,6 +5,7 @@ import 'package:http/http.dart' as http;
 
 import './connected_products_model.dart';
 import '../models/product.dart';
+import '../models/location_data.dart';
 
 class ProductsModel extends ConnectedProductsModel {
   static const String _serviceUrl =
@@ -211,6 +212,10 @@ class ProductsModel extends ConnectedProductsModel {
             .containsKey(authenticatedUser.id);
       }
 
+      var locationInfo = productData['location'];
+      LocationData location = LocationData(locationInfo['latitude'],
+          locationInfo['longitude'], locationInfo['address']);
+
       Product product = Product(
           productId,
           productData['title'],
@@ -219,7 +224,8 @@ class ProductsModel extends ConnectedProductsModel {
           productData['price'],
           productData['userId'],
           productData['userEmail'],
-          isFavorite);
+          isFavorite,
+          location);
 
       fetchedProducts.add(product);
     });
