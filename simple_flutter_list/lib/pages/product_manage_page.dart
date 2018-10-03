@@ -6,6 +6,7 @@ import '../models/product.dart';
 import '../scoped_models/main_model.dart';
 import '../helpers/ensure_visible.dart';
 import '../widgets/custom/http_error_dialog.dart';
+import '../widgets/custom/location.dart';
 
 class ProductManagePage extends StatefulWidget {
   @override
@@ -171,7 +172,7 @@ class _ProductCreatePageState extends State<ProductManagePage> {
                         _buildDescriptionTextField(model.selectedProduct),
                         _buildPriceTextField(model.selectedProduct),
                         SizedBox(height: 10.0),
-
+                        LocationInput(),
                         SizedBox(height: 10.0),
                         _buildCreateProductButton(model)
                       ]))));
