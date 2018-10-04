@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:map_view/map_view.dart';
 import 'package:http/http.dart' as http;
+import 'package:location/location.dart' as geoloc;
 
 import '../../helpers/ensure_visible.dart';
 import '../../models/location_data.dart';
@@ -34,7 +35,7 @@ class _LocationInputState extends State<LocationInput> {
 
     // If we are in the edit mode, retrieve the product address
     if (widget.product != null) {
-      getStaticMap(widget.product.location.address, false);
+      _getStaticMap(widget.product.location.address, geocode: false);
     }
     super.initState();
   }
@@ -45,7 +46,8 @@ class _LocationInputState extends State<LocationInput> {
     super.dispose();
   }
 
-  void getStaticMap(String locationName, [bool geocode = true]) async {
+  void _getStaticMap(String locationName,
+      {bool geocode = true, double lat, double lng}) async {
     if (locationName.isEmpty) {
       setState(() {
         _staticMapUri = null;
@@ -75,8 +77,10 @@ class _LocationInputState extends State<LocationInput> {
       var coordinates = decodedResponse['results'][0]['geometry']['location'];
       _locationData = LocationData(
           coordinates['lat'], coordinates['lng'], formattedAddress);
-    } else {
+    } else if (lat == null && lng == null) {
       _locationData = widget.product.location;
+    } else {
+      _locationData = LocationData(lat, lng, locationName);
     }
 
     StaticMapProvider staticMapProvider = StaticMapProvider(_googleApiKey);
@@ -101,8 +105,45 @@ class _LocationInputState extends State<LocationInput> {
   void _updateLocation() {
     // When the user focuses away from the address input field
     if (!_addressInputNode.hasFocus) {
-      getStaticMap(_addressInputController.text);
+      _getStaticMap(_addressInputController.text);
     }
+  }
+
+  void _getUserLocation() async {
+    var location = geoloc.Location();
+
+    var currentLocation = Map<String, double>();
+
+    try {
+      currentLocation = await location.getLocation();
+    } catch (error) {
+      currentLocation = null;
+      return;
+    }
+
+    double lat = currentLocation['latitude'];
+    double lng = currentLocation['longitude'];
+    String address = await _getAddress(lat, lng);
+
+    _getStaticMap(address, geocode: false, lat: lat, lng: lng);
+  }
+
+  Future<String> _getAddress(double lat, double lng) async {
+    Uri uri = Uri.https('maps.googleapis.com', '/maps/api/geocode/json',
+        {'latlng': '$lat,$lng', 'key': _googleApiKey});
+
+    http.Response response;
+
+    try {
+      response = await http.get(uri);
+    } catch (error) {
+      return '';
+    }
+
+    var responseData = json.decode(response.body);
+    String formattedAddress = responseData['results'][0]['formatted_address'];
+
+    return formattedAddress;
   }
 
   @override
@@ -122,6 +163,8 @@ class _LocationInputState extends State<LocationInput> {
                   }
                 },
                 decoration: InputDecoration(labelText: "Product Location"))),
+        SizedBox(height: 12.0),
+        FlatButton(child: Text('Get Location'), onPressed: _getUserLocation),
         SizedBox(height: 12.0),
         _staticMapUri == null
             ? Container()

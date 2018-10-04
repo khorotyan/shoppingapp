@@ -82,7 +82,7 @@ class ProductCard extends StatelessWidget {
           image: NetworkImage(product.imageUrl),
           placeholder: AssetImage('images/img512_512.png')),
       _buildTitlePriceRow(),
-      AddressTag('Manchester, United Kingdom'),
+      AddressTag(product.location.address),
       SizedBox(height: 12.0),
       Text(product.userEmail),
       _buildActionButtons(context)
