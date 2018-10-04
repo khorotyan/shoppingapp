@@ -34,7 +34,7 @@ class _LocationInputState extends State<LocationInput> {
 
     // If we are in the edit mode, retrieve the product address
     if (widget.product != null) {
-      getStaticMap(widget.product.location.address);
+      getStaticMap(widget.product.location.address, false);
     }
     super.initState();
   }
@@ -45,7 +45,7 @@ class _LocationInputState extends State<LocationInput> {
     super.dispose();
   }
 
-  void getStaticMap(String locationName) async {
+  void getStaticMap(String locationName, [bool geocode = true]) async {
     if (locationName.isEmpty) {
       setState(() {
         _staticMapUri = null;
@@ -55,7 +55,7 @@ class _LocationInputState extends State<LocationInput> {
     }
 
     // Retrieve coordinates from address
-    if (widget.product == null) {
+    if (geocode) {
       Uri uri = Uri.https('maps.googleapis.com', '/maps/api/geocode/json',
           {'address': locationName, 'key': _googleApiKey});
       http.Response response;
@@ -123,7 +123,9 @@ class _LocationInputState extends State<LocationInput> {
                 },
                 decoration: InputDecoration(labelText: "Product Location"))),
         SizedBox(height: 12.0),
-        Image.network(_staticMapUri.toString())
+        _staticMapUri == null
+            ? Container()
+            : Image.network(_staticMapUri.toString())
       ],
     );
   }

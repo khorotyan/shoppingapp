@@ -114,7 +114,12 @@ class ProductsModel extends ConnectedProductsModel {
       'imageUrl': newProduct.imageUrl,
       'price': newProduct.price,
       'userId': newProduct.userId,
-      'userEmail': newProduct.userEmail
+      'userEmail': newProduct.userEmail,
+      'location': {
+        'latitude': newProduct.location.latitude,
+        'longitude': newProduct.location.longitude,
+        'address': newProduct.location.address
+      }
     };
 
     isLoading = true;
