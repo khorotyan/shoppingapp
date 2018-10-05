@@ -28,7 +28,11 @@
 	<string>Main</string>
 	<key>UISupportedInterfaceOrientations</key>
 	<key>NSLocationWhenInUseUsageDescription</key>
-    <string>User location is required for viewing or creating a product location</string>
+    <string>User location is required for viewing or creating a product location.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Gallery access is needed for creating product images.</string>
+	<key>NSCameraUsageDescription</key>
+	<string>Camera access is needed for creating product images.</string>
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>
 		<string>UIInterfaceOrientationLandscapeLeft</string>

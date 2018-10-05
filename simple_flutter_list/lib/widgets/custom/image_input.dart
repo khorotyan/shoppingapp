@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 
 import 'package:image_picker/image_picker.dart';
@@ -24,18 +26,24 @@ class _ImageInputState extends State<ImageInput> {
                 FlatButton(
                     textColor: Theme.of(context).accentColor,
                     child: Text('Use Camera'),
-                    onPressed: () {}),
+                    onPressed: () {
+                      _getImage(context, ImageSource.camera);
+                    }),
                 SizedBox(height: 5.0),
                 FlatButton(
                     textColor: Theme.of(context).accentColor,
                     child: Text('Use Gallery'),
-                    onPressed: () {})
+                    onPressed: () {
+                      _getImage(context, ImageSource.gallery);
+                    })
               ]));
         });
   }
 
-  void _getImage(BuildContext context, ImageSource ) {
-    
+  void _getImage(BuildContext context, ImageSource source) async {
+    var image = await ImagePicker.pickImage(source: source, maxWidth: 400.0);
+
+    Navigator.pop(context);
   }
 
   @override
@@ -52,6 +60,7 @@ class _ImageInputState extends State<ImageInput> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
                 Icon(Icons.camera_alt, color: accentColor),
+                SizedBox(width: 2.0),
                 Text('Add Image', style: TextStyle(color: accentColor))
               ]))
     ]);
