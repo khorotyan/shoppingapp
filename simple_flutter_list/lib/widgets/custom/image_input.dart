@@ -12,6 +12,8 @@ class ImageInput extends StatefulWidget {
 }
 
 class _ImageInputState extends State<ImageInput> {
+  File _imageFile;
+
   void _openImagePicker(BuildContext context) {
     showModalBottomSheet(
         context: context,
@@ -43,6 +45,10 @@ class _ImageInputState extends State<ImageInput> {
   void _getImage(BuildContext context, ImageSource source) async {
     var image = await ImagePicker.pickImage(source: source, maxWidth: 400.0);
 
+    setState(() {
+      _imageFile = image;
+    });
+
     Navigator.pop(context);
   }
 
@@ -52,17 +58,25 @@ class _ImageInputState extends State<ImageInput> {
 
     return Column(children: <Widget>[
       OutlineButton(
-          borderSide: BorderSide(color: accentColor, width: 1.0),
-          onPressed: () {
-            _openImagePicker(context);
-          },
-          child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                Icon(Icons.camera_alt, color: accentColor),
-                SizedBox(width: 2.0),
-                Text('Add Image', style: TextStyle(color: accentColor))
-              ]))
+        borderSide: BorderSide(color: accentColor, width: 1.0),
+        onPressed: () {
+          _openImagePicker(context);
+        },
+        child:
+            Row(mainAxisAlignment: MainAxisAlignment.center, children: <Widget>[
+          Icon(Icons.camera_alt, color: accentColor),
+          SizedBox(width: 2.0),
+          Text('Add Image', style: TextStyle(color: accentColor))
+        ]),
+      ),
+      SizedBox(height: 10.0),
+      _imageFile == null
+          ? Text('Please pick an image.')
+          : Image.file(_imageFile,
+              fit: BoxFit.cover,
+              height: 300.0,
+              width: MediaQuery.of(context).size.width,
+              alignment: Alignment.center)
     ]);
   }
 }
