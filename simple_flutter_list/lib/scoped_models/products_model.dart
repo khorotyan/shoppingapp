@@ -1,7 +1,10 @@
 import 'dart:convert';
 import 'dart:async';
+import 'dart:io';
 
 import 'package:http/http.dart' as http;
+import 'package:mime/mime.dart';
+import 'package:http_parser/http_parser.dart';
 
 import './connected_products_model.dart';
 import '../models/product.dart';
@@ -54,14 +57,68 @@ class ProductsModel extends ConnectedProductsModel {
     });
   }
 
-  Future<bool> addProduct(Product product) async {
+  Future<Map<String, dynamic>> _uploadImage(File imageFile,
+      {String imagePath}) async {
+    var mimeTypeData = lookupMimeType(imageFile.path).split('/');
+
+    var uploadRequest = http.MultipartRequest(
+        'POST',
+        Uri.parse(
+            'https://us-central1-flutter-shopping-ce8bc.cloudfunctions.net/storeImage'));
+    var file = await http.MultipartFile.fromPath('image', imageFile.path,
+        contentType: MediaType(mimeTypeData[0], mimeTypeData[1]));
+    uploadRequest.files.add(file);
+
+    if (imagePath != null) {
+      uploadRequest.fields['imagePath'] = Uri.encodeComponent(imagePath);
+    }
+
+    uploadRequest.headers['Authorization'] =
+        'Bearer ${authenticatedUser.accessToken}';
+
+    http.Response response;
+
+    try {
+      var streamedResponse = await uploadRequest.send();
+      response = await http.Response.fromStream(streamedResponse);
+
+      if (response.statusCode >= 400) {
+        print(json.decode(response.body));
+        return null;
+      }
+    } catch (error) {
+      print(error);
+      return null;
+    }
+
+    var responseData = json.decode(response.body);
+    return responseData;
+  }
+
+  Future<bool> addProduct(Product product, File imageFile) async {
     product.userEmail = authenticatedUser.email;
     product.userId = authenticatedUser.id;
+
+    String finalUrl = _serviceUrl + _serviceExtension + _authParam;
+
+    isLoading = true;
+    notifyListeners();
+
+    var uploadData = await _uploadImage(imageFile);
+
+    if (uploadData == null) {
+      print('Failed to upload product image');
+      return false;
+    }
+
+    String imagePath = uploadData['imagePath'];
+    String imageUrl = uploadData['imageUrl'];
 
     final Map<String, dynamic> productData = {
       'title': product.title,
       'description': product.description,
-      'imageUrl': product.imageUrl,
+      'imagePath': imagePath,
+      'imageUrl': imageUrl,
       'price': product.price,
       'userId': product.userId,
       'userEmail': product.userEmail,
@@ -72,10 +129,6 @@ class ProductsModel extends ConnectedProductsModel {
       }
     };
 
-    String finalUrl = _serviceUrl + _serviceExtension + _authParam;
-
-    isLoading = true;
-    notifyListeners();
     http.Response response;
     try {
       response = await http.post(finalUrl, body: json.encode(productData));
@@ -95,23 +148,42 @@ class ProductsModel extends ConnectedProductsModel {
     final Map<String, dynamic> responseData = json.decode(response.body);
 
     product.id = responseData['name'];
+    product.imagePath = imagePath;
+    product.imageUrl = imageUrl;
     products.add(product);
     notifyListeners();
 
     return true;
   }
 
-  Future<bool> updateProduct(Product newProduct) async {
+  Future<bool> updateProduct(Product newProduct, File imageFile) async {
     newProduct.id = selectedProduct.id;
     newProduct.userEmail = authenticatedUser.email;
     newProduct.userId = authenticatedUser.id;
 
+    String imagePath = selectedProduct.imagePath;
+    String imageUrl = selectedProduct.imageUrl;
+
     String finalUrl =
         _serviceUrl + '/${selectedProduct.id}' + _serviceExtension + _authParam;
+
+    if (imageFile != null) {
+      var uploadData = await _uploadImage(imageFile);
+
+      if (uploadData == null) {
+        print('Product image upload failed');
+        return false;
+      }
+
+      imagePath = uploadData['imagePath'];
+      imageUrl = uploadData['imageUrl'];
+    }
+
     Map<String, dynamic> updateData = {
       'title': newProduct.title,
       'description': newProduct.description,
-      'imageUrl': newProduct.imageUrl,
+      'imagePath': imagePath,
+      'imageUrl': imageUrl,
       'price': newProduct.price,
       'userId': newProduct.userId,
       'userEmail': newProduct.userEmail,
@@ -225,6 +297,7 @@ class ProductsModel extends ConnectedProductsModel {
           productId,
           productData['title'],
           productData['description'],
+          productData['imagePath'],
           productData['imageUrl'],
           productData['price'],
           productData['userId'],

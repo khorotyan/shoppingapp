@@ -1,5 +1,5 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
-
 import 'package:scoped_model/scoped_model.dart';
 
 import '../models/product.dart';
@@ -18,14 +18,8 @@ class ProductManagePage extends StatefulWidget {
 }
 
 class _ProductCreatePageState extends State<ProductManagePage> {
-  Product _product = Product(
-      '',
-      '',
-      '',
-      'https://yt3.ggpht.com/-tWsZd32F8kY/AAAAAAAAAAI/AAAAAAAAAAA/WrxnIMGaU3Y/nd/photo.jpg',
-      0.0,
-      '',
-      '');
+  Product _product = Product(null, null, null, null, null, null, null, null);
+  File _imageFile;
 
   final GlobalKey<FormState> _formKey = new GlobalKey<FormState>();
   final _titleFocusNode = FocusNode();
@@ -97,6 +91,10 @@ class _ProductCreatePageState extends State<ProductManagePage> {
     _product.location = locationData;
   }
 
+  void _setImage(File image) {
+    _imageFile = image;
+  }
+
   Widget _buildCreateProductButton(MainModel model) {
     Widget widget = model.isLoading
         ? Center(child: CircularProgressIndicator())
@@ -118,15 +116,16 @@ class _ProductCreatePageState extends State<ProductManagePage> {
 
     // Calls all the validator methods on the forms,
     //  true if all validations succeeds, false if at least one fails
-    if (!_formKey.currentState.validate()) {
+    if (!_formKey.currentState.validate() ||
+        (_imageFile == null && selectedProductId == null)) {
       return;
     }
 
     bool isSuccessful;
     if (selectedProductId == null) {
-      isSuccessful = await addProduct(_product);
+      isSuccessful = await addProduct(_product, _imageFile);
     } else {
-      isSuccessful = await updateProduct(_product);
+      isSuccessful = await updateProduct(_product, _imageFile);
     }
 
     if (!isSuccessful) {
@@ -180,7 +179,7 @@ class _ProductCreatePageState extends State<ProductManagePage> {
                         SizedBox(height: 10.0),
                         LocationInput(_setLocation, model.selectedProduct),
                         SizedBox(height: 10.0),
-                        ImageInput(),
+                        ImageInput(_setImage, _product),
                         SizedBox(height: 10.0),
                         _buildCreateProductButton(model)
                       ]))));
