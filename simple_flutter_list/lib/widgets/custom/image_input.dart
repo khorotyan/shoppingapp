@@ -71,7 +71,7 @@ class _ImageInputState extends State<ImageInput> {
           height: 300.0,
           width: MediaQuery.of(context).size.width,
           alignment: Alignment.center);
-    } else if (widget.product != null) {
+    } else if (widget.product != null && widget.product.imageUrl != null) {
       previewImage = Image.network(widget.product.imageUrl,
           fit: BoxFit.cover,
           height: 300.0,

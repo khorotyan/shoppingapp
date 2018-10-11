@@ -7,6 +7,7 @@ import 'package:map_view/map_view.dart';
 import '../models/product.dart';
 import '../scoped_models/main_model.dart';
 import '../widgets/ui_elements/title_default.dart';
+import '../widgets/products/product_fab.dart';
 
 class ProductPage extends StatelessWidget {
   final MainModel mainModel;
@@ -76,25 +77,27 @@ class ProductPage extends StatelessWidget {
 
       return Scaffold(
           appBar: AppBar(title: Text(product.title)),
-          body: Container(
-              padding: EdgeInsets.all(6.0),
-              child: Column(
-                  crossAxisAlignment:
-                      CrossAxisAlignment.center, // Horizontal alignment
-                  children: <Widget>[
-                    FadeInImage(
-                        image: NetworkImage(product.imageUrl),
-                        placeholder: AssetImage('images/img512_512.png')),
-                    SizedBox(height: 10.0),
-                    TitleDefault(product.title),
-                    SizedBox(height: 10.0),
-                    _buildAddressAddressAndPriceRow(
-                        product.location.address, product.price),
-                    Container(
-                        padding: EdgeInsets.all(10.0),
-                        child: Text(product.description,
-                            textAlign: TextAlign.center))
-                  ])));
+          floatingActionButton: ProductFAB(),
+          body: SingleChildScrollView(
+              child: Container(
+                  padding: EdgeInsets.all(6.0),
+                  child: Column(
+                      crossAxisAlignment:
+                          CrossAxisAlignment.center, // Horizontal alignment
+                      children: <Widget>[
+                        FadeInImage(
+                            image: NetworkImage(product.imageUrl),
+                            placeholder: AssetImage('images/img512_512.png')),
+                        SizedBox(height: 10.0),
+                        TitleDefault(product.title),
+                        SizedBox(height: 10.0),
+                        _buildAddressAddressAndPriceRow(
+                            product.location.address, product.price),
+                        Container(
+                            padding: EdgeInsets.all(10.0),
+                            child: Text(product.description,
+                                textAlign: TextAlign.center))
+                      ]))));
     }));
   }
 }

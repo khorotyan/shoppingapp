@@ -1,6 +1,6 @@
 const functions = require('firebase-functions');
 const cors = require('cors')({ origin: true });
-const busboy = require('busboy');
+const Busboy = require('busboy');
 const os = require('os');
 const path = require('path');
 const fs = require('fs');
@@ -15,7 +15,7 @@ const uuid = require('uuid/v4');
 // });
 
 const gcconfig = {
-    projectId: 'flutter-products',
+    projectId: 'flutter-shopping-ce8bc',
     keyFileName: 'flutter-shopping.json'
 };
 
@@ -35,11 +35,12 @@ exports.storeImage = functions.https.onRequest((req, res) => {
 
         let idToken = req.headers.authorization.split('Bearer ')[1];
         let uploadData;
+        let oldImagePath;
 
-        const busboy = new busboy({ headers: req.headers });
+        const busboy = new Busboy({ headers: req.headers });
 
         busboy.on('file', (fieldName, file, fileName, encoding, mimeType) => {
-            const filePath = path.join(os.tmpdir(), filename);
+            const filePath = path.join(os.tmpdir(), fileName);
             uploadData = { filePath: filePath, type: mimeType, name: fileName };
             file.pipe(fs.createWriteStream(filePath));
         });

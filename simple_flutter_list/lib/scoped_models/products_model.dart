@@ -73,8 +73,9 @@ class ProductsModel extends ConnectedProductsModel {
       uploadRequest.fields['imagePath'] = Uri.encodeComponent(imagePath);
     }
 
+    String accessToken = authenticatedUser.accessToken;
     uploadRequest.headers['Authorization'] =
-        'Bearer ${authenticatedUser.accessToken}';
+        'Bearer $accessToken';
 
     http.Response response;
 

@@ -27,7 +27,8 @@ class _ProductListPageState extends State<ProductListPage> {
   }
 
   void initializeState() async {
-    bool isSuccessful = await widget.model.fetchProducts(onlyUserProducts: true);
+    bool isSuccessful =
+        await widget.model.fetchProducts(onlyUserProducts: true);
 
     if (!isSuccessful) {
       showDialog(
@@ -56,10 +57,14 @@ class _ProductListPageState extends State<ProductListPage> {
   }
 
   Widget _buildListItem(BuildContext context, int index, MainModel model) {
-    return ListTile(
-        leading: CircleAvatar(
+    var leading = model.allProducts[index].imageUrl != null
+        ? CircleAvatar(
             backgroundImage: NetworkImage(model.allProducts[index].imageUrl),
-            radius: 22.0),
+            radius: 22.0)
+        : Text('No image found');
+
+    return ListTile(
+        leading: leading,
         title: Text(model.allProducts[index].title),
         subtitle: Text('\$${model.allProducts[index].price}'),
         trailing: _buildEditButton(context, index, model));

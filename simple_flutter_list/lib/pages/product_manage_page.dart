@@ -31,8 +31,8 @@ class _ProductCreatePageState extends State<ProductManagePage> {
         focusNode: _titleFocusNode,
         child: TextFormField(
           focusNode: _titleFocusNode,
-          decoration: InputDecoration(labelText: 'Product Title'),
           initialValue: product != null ? product.title : '',
+          decoration: InputDecoration(labelText: 'Product Title'),
           validator: (String value) {
             if (value.isEmpty) {
               return 'Title field is required';
@@ -51,9 +51,9 @@ class _ProductCreatePageState extends State<ProductManagePage> {
         focusNode: _descriptionFocusNode,
         child: TextFormField(
             focusNode: _descriptionFocusNode,
+            initialValue: product != null ? product.description : '',
             decoration: InputDecoration(labelText: 'Product Description'),
             maxLines: 5,
-            initialValue: product != null ? product.description : '',
             validator: (String value) {
               if (value.isEmpty) {
                 return 'Description field is required';
@@ -98,14 +98,16 @@ class _ProductCreatePageState extends State<ProductManagePage> {
   Widget _buildCreateProductButton(MainModel model) {
     Widget widget = model.isLoading
         ? Center(child: CircularProgressIndicator())
-        : RaisedButton(
-            textColor: Colors.white,
-            child: Text('Save'),
-            onPressed: () => _onCreateProductClick(
-                model.addProduct,
-                model.updateProduct,
-                model.selectProduct,
-                model.selectedProductId));
+        : ButtonTheme(
+            minWidth: double.infinity,
+            child: RaisedButton(
+                textColor: Colors.white,
+                child: Text('Save'),
+                onPressed: () => _onCreateProductClick(
+                    model.addProduct,
+                    model.updateProduct,
+                    model.selectProduct,
+                    model.selectedProductId)));
 
     return widget;
   }
@@ -169,20 +171,22 @@ class _ProductCreatePageState extends State<ProductManagePage> {
           child: Container(
               child: Form(
                   key: _formKey,
-                  child: ListView(
-                      padding:
-                          EdgeInsets.symmetric(horizontal: _getPagePadding()),
-                      children: <Widget>[
-                        _buildTitleTextField(model.selectedProduct),
-                        _buildDescriptionTextField(model.selectedProduct),
-                        _buildPriceTextField(model.selectedProduct),
-                        SizedBox(height: 10.0),
-                        LocationInput(_setLocation, model.selectedProduct),
-                        SizedBox(height: 10.0),
-                        ImageInput(_setImage, _product),
-                        SizedBox(height: 10.0),
-                        _buildCreateProductButton(model)
-                      ]))));
+                  child: SingleChildScrollView(
+                      child: Container(
+                          padding: EdgeInsets.symmetric(
+                              horizontal: _getPagePadding()),
+                          child: Column(children: <Widget>[
+                            _buildTitleTextField(model.selectedProduct),
+                            _buildDescriptionTextField(model.selectedProduct),
+                            _buildPriceTextField(model.selectedProduct),
+                            SizedBox(height: 10.0),
+                            LocationInput(_setLocation, model.selectedProduct),
+                            SizedBox(height: 10.0),
+                            ImageInput(_setImage, model.selectedProduct),
+                            SizedBox(height: 10.0),
+                            _buildCreateProductButton(model),
+                            SizedBox(height: 10.0)
+                          ]))))));
 
       return model.selectedProductId == null
           ? pageContent
