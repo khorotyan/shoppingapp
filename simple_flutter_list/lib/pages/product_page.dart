@@ -78,26 +78,32 @@ class ProductPage extends StatelessWidget {
       return Scaffold(
           appBar: AppBar(title: Text(product.title)),
           floatingActionButton: ProductFAB(product),
-          body: SingleChildScrollView(
-              child: Container(
-                  padding: EdgeInsets.all(6.0),
-                  child: Column(
-                      crossAxisAlignment:
-                          CrossAxisAlignment.center, // Horizontal alignment
-                      children: <Widget>[
-                        FadeInImage(
+          body: CustomScrollView(slivers: <Widget>[
+            SliverAppBar(
+                expandedHeight: 256,
+                pinned: true,
+                flexibleSpace: FlexibleSpaceBar(
+                    title: Text(product.title),
+                    background: Hero(
+                        tag: product.id,
+                        child: FadeInImage(
                             image: NetworkImage(product.imageUrl),
-                            placeholder: AssetImage('images/img512_512.png')),
-                        SizedBox(height: 10.0),
-                        TitleDefault(product.title),
-                        SizedBox(height: 10.0),
-                        _buildAddressAddressAndPriceRow(
-                            product.location.address, product.price),
-                        Container(
-                            padding: EdgeInsets.all(10.0),
-                            child: Text(product.description,
-                                textAlign: TextAlign.center))
-                      ]))));
+                            placeholder:
+                                AssetImage('images/img512_512.png'))))),
+            SliverList(
+                delegate: SliverChildListDelegate([
+              SizedBox(height: 10.0),
+              Container(
+                  child: TitleDefault(product.title),
+                  alignment: Alignment.center),
+              SizedBox(height: 10.0),
+              _buildAddressAddressAndPriceRow(
+                  product.location.address, product.price),
+              Container(
+                  padding: EdgeInsets.all(10.0),
+                  child: Text(product.description, textAlign: TextAlign.center))
+            ]))
+          ]));
     }));
   }
 }

@@ -52,8 +52,7 @@ class ProductCard extends StatelessWidget {
         onPressed: () {
           var productId = model.displayedProducts[productIndex].id;
           model.selectProduct(productId);
-          Navigator
-              .pushNamed<bool>(context, '/product/' + productId)
+          Navigator.pushNamed<bool>(context, '/product/' + productId)
               .then((_) => model.selectProduct((null)));
         });
   }
@@ -83,11 +82,12 @@ class ProductCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Card(
         child: Column(children: <Widget>[
-      FadeInImage(
-          image: product.imageUrl != null
-              ? NetworkImage(product.imageUrl)
-              : AssetImage('images/img512_512.png'),
-          placeholder: AssetImage('images/img512_512.png')),
+      Hero(
+          child: FadeInImage(
+              image: product.imageUrl != null
+                  ? NetworkImage(product.imageUrl)
+                  : AssetImage('images/img512_512.png'),
+              placeholder: AssetImage('images/img512_512.png'))),
       _buildTitlePriceRow(),
       AddressTag(product.location.address),
       _buildActionButtons(context)
