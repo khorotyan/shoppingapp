@@ -77,7 +77,7 @@ class ProductPage extends StatelessWidget {
 
       return Scaffold(
           appBar: AppBar(title: Text(product.title)),
-          floatingActionButton: ProductFAB(),
+          floatingActionButton: ProductFAB(product),
           body: SingleChildScrollView(
               child: Container(
                   padding: EdgeInsets.all(6.0),

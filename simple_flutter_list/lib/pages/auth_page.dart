@@ -12,7 +12,9 @@ class AuthPage extends StatefulWidget {
   }
 }
 
-class _AuthPageState extends State<AuthPage> {
+class _AuthPageState extends State<AuthPage> with TickerProviderStateMixin {
+  AnimationController _animController;
+  Animation<Offset> _slideAnimation;
   String _email;
   String _password;
   bool _acceptTerms = false;
@@ -24,6 +26,17 @@ class _AuthPageState extends State<AuthPage> {
 
   final GlobalKey<FormState> _formKey = new GlobalKey<FormState>();
   final TextEditingController _passwordController = TextEditingController();
+
+  @override
+  initState() {
+    _animController =
+        AnimationController(vsync: this, duration: Duration(milliseconds: 300));
+    // 2.0 means - twice the widget's height
+    _slideAnimation = Tween<Offset>(begin: Offset(0.0, -1.0), end: Offset.zero)
+        .animate(CurvedAnimation(
+            parent: _animController, curve: Curves.fastOutSlowIn));
+    super.initState();
+  }
 
   DecorationImage _buildBackgroundImage() {
     return DecorationImage(
@@ -67,19 +80,19 @@ class _AuthPageState extends State<AuthPage> {
   }
 
   Widget _buildPasswordConfirmTextField() {
-    if (!_isLoginMode) {
-      return TextFormField(
-          decoration:
-              InputDecoration(labelText: 'Confirm Password', filled: true),
-          obscureText: true,
-          validator: (String value) {
-            if (_passwordController.text != value) {
-              return 'Passwords do not match';
-            }
-          });
-    }
-
-    return Container();
+    return FadeTransition(
+        opacity: CurvedAnimation(parent: _animController, curve: Curves.easeIn),
+        child: SlideTransition(
+            position: _slideAnimation,
+            child: TextFormField(
+                decoration: InputDecoration(
+                    labelText: 'Confirm Password', filled: true),
+                obscureText: true,
+                validator: (String value) {
+                  if (_passwordController.text != value && !_isLoginMode) {
+                    return 'Passwords do not match';
+                  }
+                })));
   }
 
   Widget _buildAcceptSwitch() {
@@ -114,8 +127,14 @@ class _AuthPageState extends State<AuthPage> {
     return FlatButton(
         child: Text(modeName, style: TextStyle()),
         onPressed: () {
+          _isLoginMode = !_isLoginMode;
+
           setState(() {
-            _isLoginMode = !_isLoginMode;
+            if (!_isLoginMode) {
+              _animController.forward();
+            } else {
+              _animController.reverse();
+            }
           });
         });
   }

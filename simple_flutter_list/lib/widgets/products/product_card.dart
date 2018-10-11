@@ -49,8 +49,13 @@ class ProductCard extends StatelessWidget {
     return IconButton(
         icon: Icon(Icons.info),
         color: Theme.of(context).accentColor,
-        onPressed: () => Navigator.pushNamed<bool>(
-            context, '/product/' + model.displayedProducts[productIndex].id));
+        onPressed: () {
+          var productId = model.displayedProducts[productIndex].id;
+          model.selectProduct(productId);
+          Navigator
+              .pushNamed<bool>(context, '/product/' + productId)
+              .then((_) => model.selectProduct((null)));
+        });
   }
 
   Widget _buildHeartButton(
