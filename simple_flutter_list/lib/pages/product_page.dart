@@ -76,18 +76,20 @@ class ProductPage extends StatelessWidget {
       final Product product = model.selectedProduct;
 
       return Scaffold(
-          appBar: AppBar(title: Text(product.title)),
           floatingActionButton: ProductFAB(product),
           body: CustomScrollView(slivers: <Widget>[
             SliverAppBar(
-                expandedHeight: 256,
+                expandedHeight: 256.0,
                 pinned: true,
                 flexibleSpace: FlexibleSpaceBar(
+                  centerTitle: true,
                     title: Text(product.title),
                     background: Hero(
                         tag: product.id,
                         child: FadeInImage(
                             image: NetworkImage(product.imageUrl),
+                            height: 300.0,
+                            fit: BoxFit.cover,
                             placeholder:
                                 AssetImage('images/img512_512.png'))))),
             SliverList(

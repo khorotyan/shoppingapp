@@ -8,6 +8,7 @@ import './pages/auth_page.dart';
 import './pages/products_admin_page.dart';
 import './pages/products_page.dart';
 import './pages/product_page.dart';
+import './helpers/custom_route.dart';
 
 void main() {
   String apiKey = 'AIzaSyD1tXGpDhf-91u0JTlMcKjGEAH_wFrH8GQ';
@@ -80,9 +81,10 @@ class _SimpleAppState extends State<SimpleApp> {
                 final String productId = pathElements[2];
                 _mainModel.selectProduct(productId);
 
-                return MaterialPageRoute<bool>(
-                    builder: (BuildContext context) =>
-                        !_isAuthenticated ? AuthPage() : ProductPage(_mainModel));
+                return CustomRoute<bool>(
+                    builder: (BuildContext context) => !_isAuthenticated
+                        ? AuthPage()
+                        : ProductPage(_mainModel));
               }
 
               return null;
