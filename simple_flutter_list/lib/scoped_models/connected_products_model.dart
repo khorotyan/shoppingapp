@@ -9,4 +9,14 @@ class ConnectedProductsModel extends Model {
   User authenticatedUser;
 
   bool isLoading = false;
+
+  void selectProduct(String productId) {
+    currentProductId = productId;
+
+    if (productId == null) {
+      return;
+    }
+
+    notifyListeners();
+  }
 }

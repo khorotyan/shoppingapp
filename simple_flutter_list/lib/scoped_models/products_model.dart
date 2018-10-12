@@ -355,16 +355,6 @@ class ProductsModel extends ConnectedProductsModel {
     return true;
   }
 
-  void selectProduct(String productId) {
-    currentProductId = productId;
-
-    if (productId == null) {
-      return;
-    }
-
-    notifyListeners();
-  }
-
   void toggleDisplayMode() {
     _showFavorites = !_showFavorites;
     notifyListeners();
