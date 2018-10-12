@@ -74,8 +74,7 @@ class ProductsModel extends ConnectedProductsModel {
     }
 
     String accessToken = authenticatedUser.accessToken;
-    uploadRequest.headers['Authorization'] =
-        'Bearer $accessToken';
+    uploadRequest.headers['Authorization'] = 'Bearer $accessToken';
 
     http.Response response;
 
@@ -250,6 +249,8 @@ class ProductsModel extends ConnectedProductsModel {
 
   Future<bool> fetchProducts(
       {bool showSpinner = true, onlyUserProducts = false}) async {
+    products = [];
+
     if (showSpinner) {
       isLoading = true;
       notifyListeners();
