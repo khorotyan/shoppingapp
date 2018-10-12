@@ -9,7 +9,6 @@ import 'package:rxdart/subjects.dart';
 import './connected_products_model.dart';
 import '../models/user.dart';
 import '../models/firebase_login_result.dart';
-import './products_model.dart';
 
 class UserModel extends ConnectedProductsModel {
   FirebaseLoginResult firebaseLoginResult;

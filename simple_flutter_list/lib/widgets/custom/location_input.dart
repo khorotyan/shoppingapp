@@ -8,6 +8,7 @@ import 'package:location/location.dart' as geoloc;
 import '../../helpers/ensure_visible.dart';
 import '../../models/location_data.dart';
 import '../../models/product.dart';
+import '../../shared/global_config.dart' as config;
 
 class LocationInput extends StatefulWidget {
   final Function setLocation;
@@ -22,7 +23,7 @@ class LocationInput extends StatefulWidget {
 }
 
 class _LocationInputState extends State<LocationInput> {
-  static const String _googleApiKey = 'AIzaSyD1tXGpDhf-91u0JTlMcKjGEAH_wFrH8GQ';
+  final String _googleApiKey = config.firebaseApiKey;
   final FocusNode _addressInputNode = FocusNode();
   final TextEditingController _addressInputController = TextEditingController();
 

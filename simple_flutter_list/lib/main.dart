@@ -9,10 +9,10 @@ import './pages/products_admin_page.dart';
 import './pages/products_page.dart';
 import './pages/product_page.dart';
 import './helpers/custom_route.dart';
+import './shared/global_config.dart' as config;
 
 void main() {
-  String apiKey = 'AIzaSyD1tXGpDhf-91u0JTlMcKjGEAH_wFrH8GQ';
-  MapView.setApiKey(apiKey);
+  MapView.setApiKey(config.firebaseApiKey);
   runApp(SimpleApp());
 }
 
