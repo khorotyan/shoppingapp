@@ -27,8 +27,8 @@ class _ProductListPageState extends State<ProductListPage> {
   }
 
   void initializeState() async {
-    bool isSuccessful =
-        await widget.model.fetchProducts(onlyUserProducts: true);
+    bool isSuccessful = await widget.model
+        .fetchProducts(onlyUserProducts: true, clearExisting: true);
 
     if (!isSuccessful) {
       showDialog(
@@ -43,8 +43,7 @@ class _ProductListPageState extends State<ProductListPage> {
       icon: Icon(Icons.edit),
       onPressed: () {
         model.selectProduct(model.allProducts[index].id);
-        Navigator
-            .of(context)
+        Navigator.of(context)
             .push(MaterialPageRoute(builder: (BuildContext context) {
           return model.authenticatedUser == null
               ? AuthPage()

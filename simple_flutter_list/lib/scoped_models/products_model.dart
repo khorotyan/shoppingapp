@@ -248,8 +248,12 @@ class ProductsModel extends ConnectedProductsModel {
   }
 
   Future<bool> fetchProducts(
-      {bool showSpinner = true, onlyUserProducts = false}) async {
-    products = [];
+      {bool showSpinner = true,
+      onlyUserProducts = false,
+      clearExisting = false}) async {
+    if (clearExisting) {
+      products = [];
+    }
 
     if (showSpinner) {
       isLoading = true;
