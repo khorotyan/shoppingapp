@@ -69,7 +69,7 @@ class _SimpleAppState extends State<SimpleApp> {
     return ScopedModel<MainModel>(
         model: _mainModel,
         child: MaterialApp(
-            title: 'Easy Shopping',
+            title: 'Simple Shopping',
             theme: ThemeData(
                 brightness: Brightness.light,
                 primarySwatch: Colors.deepOrange,
