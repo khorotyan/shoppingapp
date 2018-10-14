@@ -4,6 +4,7 @@ import 'package:scoped_model/scoped_model.dart';
 
 import '../scoped_models/main_model.dart';
 import '../widgets/custom/http_error_dialog.dart';
+import '../adaptive_widgets/progress_indicator.dart' as aw;
 
 class AuthPage extends StatefulWidget {
   @override
@@ -112,7 +113,7 @@ class _AuthPageState extends State<AuthPage> with TickerProviderStateMixin {
         builder: (BuildContext context, Widget child, MainModel model) {
       String text = _isLoginMode == true ? _loginButtonText : _signupButtonText;
       return model.isLoading
-          ? Center(child: CircularProgressIndicator())
+          ? Center(child: aw.ProgressIndicator())
           : RaisedButton(
               textColor: Colors.white,
               child: Text(text),

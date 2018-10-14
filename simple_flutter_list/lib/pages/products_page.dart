@@ -5,6 +5,7 @@ import 'package:scoped_model/scoped_model.dart';
 import '../widgets/products/products.dart';
 import '../scoped_models/main_model.dart';
 import '../widgets/custom/http_error_dialog.dart';
+import '../adaptive_widgets/progress_indicator.dart' as aw;
 
 class ProductsPage extends StatefulWidget {
   final MainModel mainModel;
@@ -66,7 +67,7 @@ class _ProductsPageState extends State<ProductsPage> {
       if (model.displayedProducts.length > 0 && !model.isLoading) {
         content = Products();
       } else if (model.isLoading) {
-        content = Center(child: CircularProgressIndicator());
+        content = Center(child: aw.ProgressIndicator());
       }
 
       return RefreshIndicator(

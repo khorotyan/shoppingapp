@@ -1,4 +1,7 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import 'package:scoped_model/scoped_model.dart';
 import 'package:map_view/map_view.dart';
@@ -32,10 +35,26 @@ class SimpleApp extends StatefulWidget {
 
 class _SimpleAppState extends State<SimpleApp> {
   final MainModel _mainModel = MainModel();
+  final _platformChannel = MethodChannel('flutter-shopping.com/battery');
   bool _isAuthenticated = false;
+
+  Future _getBatteryLevel() async {
+    String batteryLevel;
+
+    try {
+      int result = await _platformChannel.invokeMethod('getBatteryLvel');
+      batteryLevel = 'Battery level: $result%';
+    } catch (error) {
+      batteryLevel = 'Problem retrieving battery level';
+      print(error);
+    }
+
+    print(batteryLevel);
+  }
 
   @override
   void initState() {
+    _getBatteryLevel();
     _mainModel.autoLogin();
     _mainModel.userSubject.listen((bool isAuthenticated) {
       setState(() {
@@ -50,6 +69,7 @@ class _SimpleAppState extends State<SimpleApp> {
     return ScopedModel<MainModel>(
         model: _mainModel,
         child: MaterialApp(
+            title: 'Easy Shopping',
             theme: ThemeData(
                 brightness: Brightness.light,
                 primarySwatch: Colors.deepOrange,

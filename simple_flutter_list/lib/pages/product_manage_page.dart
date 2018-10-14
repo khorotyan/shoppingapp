@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:scoped_model/scoped_model.dart';
+import 'package:flutter/cupertino.dart';
 
 import '../models/product.dart';
 import '../scoped_models/main_model.dart';
@@ -9,6 +10,7 @@ import '../widgets/custom/http_error_dialog.dart';
 import '../widgets/custom/location_input.dart';
 import '../widgets/custom/image_input.dart';
 import '../models/location_data.dart';
+import '../adaptive_widgets/progress_indicator.dart' as aw;
 
 class ProductManagePage extends StatefulWidget {
   @override
@@ -97,7 +99,7 @@ class _ProductCreatePageState extends State<ProductManagePage> {
 
   Widget _buildCreateProductButton(MainModel model) {
     Widget widget = model.isLoading
-        ? Center(child: CircularProgressIndicator())
+        ? Center(child: aw.ProgressIndicator())
         : ButtonTheme(
             minWidth: double.infinity,
             child: RaisedButton(
@@ -136,8 +138,7 @@ class _ProductCreatePageState extends State<ProductManagePage> {
           builder: (BuildContext context) =>
               HttpErrorDialog('Something went wrong', 'Please try again!'));
     } else {
-      Navigator
-          .pushReplacementNamed(context, '/')
+      Navigator.pushReplacementNamed(context, '/')
           .then((_) => setSelectedProduct(null));
     }
   }
