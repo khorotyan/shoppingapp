@@ -22,11 +22,11 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
-    
+
   flutter_launcher_icons: ^0.6.1
 
 flutter_icons:
-  android: true 
+  android: true
   ios: true
   image_path: "assets/icon/shopping_2.png"
   adaptive_icon_background: "#FFFAFAFA"
@@ -37,7 +37,6 @@ flutter_icons:
 
 # The following section is specific to Flutter.
 flutter:
-
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in
   # the material Icons class.
@@ -75,3 +74,8 @@ flutter:
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.io/custom-fonts/#from-packages
+
+analyzer:
+  strong-mode: true
+  language:
+    enableSuperMixins: true
